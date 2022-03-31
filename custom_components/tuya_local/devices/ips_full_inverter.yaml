@@ -52,12 +52,9 @@ primary_entity:
       readonly: true
       mapping:
         - dps_val: warm
-          constraint: hvac_mode
-          conditions:
-            - dps_val: false
-              value: "off"
-            - dps_val: true
-              value: idle
+          value: "warm"
+        - dps_val: cold
+          value: "cold"
     - id: 106
       name: temperature
       type: integer
