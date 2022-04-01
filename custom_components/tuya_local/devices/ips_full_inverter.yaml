@@ -3,7 +3,7 @@ primary_entity:
   entity: climate
   dps:
     - id: 1
-      name: ips_on_off
+      name: hvac_mode
       type: boolean
       mapping:
         - dps_val: false
@@ -15,7 +15,7 @@ primary_entity:
           icon: "mdi:hot-tub"
           icon_priority: 3
     - id: 2
-      name: ips_mode
+      name: preset_mode
       type: string
       mapping:
         - dps_val: silence
@@ -31,7 +31,7 @@ primary_entity:
           icon: "mdi:hot-tub"
           icon_priority: 3
     - id: 102
-      name: ips_ingoing_temperature
+      name: current_temperature
       type: integer
       readonly: true
     - id: 103
@@ -43,11 +43,11 @@ primary_entity:
         - dps_val: true
           value: C
     - id: 104
-      name: ips_power_level
+      name: power_level
       type: integer
       readonly: true
     - id: 105
-      name: ips_action
+      name: hvac_action
       type: string
       readonly: true
       mapping:
