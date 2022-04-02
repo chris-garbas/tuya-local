@@ -48,7 +48,7 @@ class TestIpsProHeatpump(
             TEMPERATURE_DPS,
             self.subject,
             min=18,
-            max=45,
+            max=40,
         )
         self.setUpBasicSensor(
             POWERLEVEL_DPS,
@@ -116,34 +116,38 @@ class TestIpsProHeatpump(
             await self.subject.async_set_hvac_mode(HVAC_MODE_OFF)
 
     def test_preset_mode(self):
-        self.dps[PRESET_DPS] = "Silent"
-        self.assertEqual(self.subject.preset_mode, "Silent")
+        self.dps[PRESET_DPS] = "silence"
+        self.assertEqual(self.subject.preset_mode, "silence")
 
-        self.dps[PRESET_DPS] = "Smart"
-        self.assertEqual(self.subject.preset_mode, "Smart")
+        self.dps[PRESET_DPS] = "smart"
+        self.assertEqual(self.subject.preset_mode, "smart")
 
         self.dps[PRESET_DPS] = "turbo"
-        self.assertEqual(self.subject.preset_mode, "turbo"
-
-        self.dps[PRESET_DPS] = None
-        self.assertIs(self.subject.preset_mode, None)
+        self.assertEqual(self.subject.preset_mode, "turbo")
 
     def test_preset_modes(self):
-        self.assertCountEqual(self.subject.preset_modes, ["Silent", "Smart", "turbo"])
+        self.assertCountEqual(self.subject.preset_modes, ["silence", "smart", "turbo"])
 
     async def test_set_preset_mode_to_silent(self):
         async with assert_device_properties_set(
             self.subject._device,
-            {PRESET_DPS: False},
+            {PRESET_DPS: "silence"},
         ):
-            await self.subject.async_set_preset_mode("Silent")
+            await self.subject.async_set_preset_mode("silence")
 
     async def test_set_preset_mode_to_smart(self):
         async with assert_device_properties_set(
             self.subject._device,
-            {PRESET_DPS: True},
+            {PRESET_DPS: "smart"},
         ):
-            await self.subject.async_set_preset_mode("Smart")
+            await self.subject.async_set_preset_mode("smart")
+
+    async def test_set_preset_mode_to_smart(self):
+        async with assert_device_properties_set(
+            self.subject._device,
+            {PRESET_DPS: "turbo"},
+        ):
+            await self.subject.async_set_preset_mode("turbo")
 
     def test_hvac_action(self):
         self.dps[HVACMODE_DPS] = True
