@@ -89,13 +89,15 @@ primary_entity:
       name: unknown_116
 secondary_entities:
   - entity: sensor
-    category: diagnostic
     name: Power Level
-    icon: "mdi:signal"
     class: power_factor
+    icon: "mdi:signal"
+    category: diagnostic
     dps:
       - id: 104
-        type: integer
         name: sensor
+        type: integer
         unit: "%"
+        class: measurement
         readonly: true
+
