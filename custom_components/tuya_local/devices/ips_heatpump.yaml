@@ -1,4 +1,4 @@
-name: IPS Inverter Heatpump
+name: IPS Heatpump
 primary_entity:
   entity: climate
   dps:
