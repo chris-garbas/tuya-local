@@ -100,7 +100,7 @@ secondary_entities:
         readonly: true
       - id: 103
         name: unit
-        type: string
+        type: boolean
         mapping:
           - dps_val: false
             value: F
