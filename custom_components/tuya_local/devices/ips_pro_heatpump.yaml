@@ -60,15 +60,14 @@ primary_entity:
               range:
                 min: 18
                 max: 40
-      range:
-        min: 18
-        max: 45
     - id: 107
       type: integer
-      name: unknown_107
+      name: min_temperature
+      readonly: true
     - id: 108
       type: integer
-      name: unknown_108
+      name: max_temperature
+      readonly: true
     - id: 115
       type: integer
       name: unknown_115
@@ -95,8 +94,8 @@ secondary_entities:
     class: temperature
     dps:
       - id: 102
-        name: current_temperature
         type: integer
+        name: sensor
         readonly: true
       - id: 103
         name: unit
