@@ -98,11 +98,11 @@ secondary_entities:
         name: current_temperature
         type: integer
         readonly: true
-      - id: 103
-        name: unit
-        type: string
-        mapping:
-          - dps_val: false
-            value: F
-          - dps_val: true
-            value: C
+#      - id: 103
+#        name: temperature_unit
+#        type: boolean
+#        mapping:
+#          - dps_val: false
+#            value: F
+#          - dps_val: true
+#            value: C
