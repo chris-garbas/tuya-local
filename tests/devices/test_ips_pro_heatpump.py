@@ -122,11 +122,11 @@ class TestIpsProHeatpump(
         self.dps[PRESET_DPS] = "smart"
         self.assertEqual(self.subject.preset_mode, "smart")
 
-        self.dps[PRESET_DPS] = "turbo"
-        self.assertEqual(self.subject.preset_mode, "turbo")
+        self.dps[PRESET_DPS] = "booster"
+        self.assertEqual(self.subject.preset_mode, "booster")
 
     def test_preset_modes(self):
-        self.assertCountEqual(self.subject.preset_modes, ["silence", "smart", "turbo"])
+        self.assertCountEqual(self.subject.preset_modes, ["silence", "smart", "booster"])
 
     async def test_set_preset_mode_to_silent(self):
         async with assert_device_properties_set(
@@ -145,9 +145,9 @@ class TestIpsProHeatpump(
     async def test_set_preset_mode_to_smart(self):
         async with assert_device_properties_set(
             self.subject._device,
-            {PRESET_DPS: "turbo"},
+            {PRESET_DPS: "booster"},
         ):
-            await self.subject.async_set_preset_mode("turbo")
+            await self.subject.async_set_preset_mode("booster")
 
     def test_hvac_action(self):
         self.dps[HVACMODE_DPS] = True
