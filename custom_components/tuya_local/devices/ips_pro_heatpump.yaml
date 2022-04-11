@@ -20,8 +20,8 @@ primary_entity:
           value: "silence"
         - dps_val: "smart"
           value: "smart"
-        - dps_val: "turbo"
-          value: "turbo"
+        - dps_val: "booster"
+          value: "booster"
     - id: 102
       name: current_temperature
       type: integer
