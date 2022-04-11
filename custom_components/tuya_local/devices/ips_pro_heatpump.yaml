@@ -89,7 +89,6 @@ secondary_entities:
         readonly: true
 
   - entity: sensor
-    category: diagnostic
     name: Current Temperature
     class: temperature
     dps:
