@@ -18,7 +18,7 @@ primary_entity:
       name: hvac_mode
       type: string
       mapping:
-        - dps_val: automatic
+        - dps_val: auto
           icon: "mdi:refresh-auto"
           icon_priority: 1
           constraint: power
