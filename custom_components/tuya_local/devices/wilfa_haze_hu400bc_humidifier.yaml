@@ -20,24 +20,30 @@ primary_entity:
         min: 30
         max: 90
       mapping:
-        - constraint: mode
+        - step: 5
+          constraint: mode
           conditions:
-            - dps_val: AUTO
+            - dps_val: auto
               invalid: true
     - id: 24
       type: string
       name: mode
       mapping:
-        - dps_val: AUTO
+        - dps_val: auto
           value: auto
-        - dps_val: MANUAL
-          value: humidity
+        - dps_val: humidity
+          value: normal
     - id: 20
       type: integer
       name: unknown_20
     - id: 22
       type: integer
-      name: unknown_22
+      name: error
+      mapping:
+        - dps_val: 0
+          value: OK
+        - dps_val: 1
+          value: Water Level Low
 secondary_entities:
   - entity: fan
     dps:
@@ -48,15 +54,15 @@ secondary_entities:
         type: string
         name: speed
         mapping:
-          - dps_val: ONE
+          - dps_val: level_0
             value: 20
-          - dps_val: TWO
+          - dps_val: level_1
             value: 40
-          - dps_val: THREE
+          - dps_val: level_2
             value: 60
-          - dps_val: FOUR
+          - dps_val: level_3
             value: 80
-          - dps_val: FIVE
+          - dps_val: level_4
             value: 100
   - entity: light
     name: Mood
@@ -75,7 +81,7 @@ secondary_entities:
     category: config
     dps:
       - id: 8
-        name: "switch"
+        name: switch
         type: boolean
         mapping:
             - dps_val: true
@@ -185,3 +191,16 @@ secondary_entities:
       - id: 35
         name: switch
         type: boolean
+  - entity: binary_sensor
+    class: problem
+    name: Tank
+    category: diagnostic
+    icon: "mdi:cup-outline"
+    dps:
+      - id: 22
+        type: bitfield
+        name: sensor
+        mapping:
+          - dps_val: 1
+            value: true
+          - value: false
