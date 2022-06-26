@@ -3,15 +3,46 @@ primary_entity:
   entity: climate
   dps:
     - id: 1
-      name: hvac_mode
+      name: power
       type: boolean
       mapping:
         - dps_val: false
           value: "off"
           icon: "mdi:hvac-off"
-        - dps_val: true
-          value: "heat"
+          icon_priority: 1
+      hidden: true
+    - id: 105
+      name: hvac_mode
+      type: string
+      mapping:
+        - dps_val: auto
+          icon: "mdi:refresh-auto"
+          icon_priority: 1
+          constraint: power
+          conditions:
+            - dps_val: false
+              value_redirect: power
+            - dps_val: true
+              value: auto
+        - dps_val: cold
+          icon: "mdi:snowflake"
+          icon_priority: 2
+          constraint: power
+          conditions:
+            - dps_val: false
+              value_redirect: power
+              value: "off"
+            - dps_val: true
+              value: cool
+        - dps_val: heating
           icon: "mdi:hot-tub"
+          icon_priority: 3
+          constraint: power
+          conditions:
+            - dps_val: false
+              value_redirect: power
+            - dps_val: true
+              value: warm
     - id: 2
       name: preset_mode
       type: string
@@ -34,18 +65,6 @@ primary_entity:
           value: F
         - dps_val: true
           value: C
-    - id: 105
-      name: hvac_action
-      type: string
-      readonly: true
-      mapping:
-        - dps_val: warm
-          constraint: hvac_mode
-          conditions:
-            - dps_val: false
-              value: "off"
-            - dps_val: true
-              value: idle
     - id: 106
       name: temperature
       type: integer
