@@ -6,14 +6,15 @@ primary_entity:
       name: power
       type: boolean
       mapping:
-        - dps_val: False
+        - dps_val: false
           value: "off"
           icon: "mdi:hvac-off"
           icon_priority: 1
-        - dps_val: True
+        - dps_val: true
           value: "on"
           icon: "mdi:hvac-on"
           icon_priority: 1
+      hidden: true
     - id: 105
       name: hvac_mode
       type: string
@@ -23,6 +24,9 @@ primary_entity:
           icon_priority: 1
           constraint: power
           conditions:
+            - dps_val: false
+              value_redirect: power
+              value: "off"
             - dps_val: true
               value: heat_cool
         - dps_val: cool
@@ -30,6 +34,9 @@ primary_entity:
           icon_priority: 2
           constraint: power
           conditions:
+            - dps_val: false
+              value_redirect: power
+              value: "off"
             - dps_val: true
               value: cool
         - dps_val: warm
@@ -37,6 +44,9 @@ primary_entity:
           icon_priority: 3
           constraint: power
           conditions:
+            - dps_val: false
+              value_redirect: power
+              value: "off"
             - dps_val: true
               value: heat
     - id: 2
@@ -91,7 +101,6 @@ secondary_entities:
         unit: "%"
         class: measurement
         readonly: true
-
   - entity: sensor
     name: Current Temperature
     class: temperature

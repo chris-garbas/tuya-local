@@ -1,6 +1,5 @@
 from homeassistant.components.climate.const import (
-    HVAC_MODE_HEAT,
-    HVAC_MODE_OFF,
+    HVACMode,
     CURRENT_HVAC_HEAT,
     CURRENT_HVAC_IDLE,
     CURRENT_HVAC_OFF,
@@ -21,7 +20,8 @@ from ..mixins.climate import TargetTemperatureTests
 from ..mixins.sensor import BasicSensorTests
 from .base_device_tests import TuyaDeviceTestCase
 
-HVACMODE_DPS = "1"
+POWER_DPS = "1"
+HVACMODE_DPS = "105"
 CURRENTTEMP_DPS = "102"
 UNITS_DPS = "103"
 POWERLEVEL_DPS = "104"
@@ -59,21 +59,14 @@ class TestIpsProHeatpump(
         )
         self.mark_secondary(["sensor_power_level"])
 
-    def test_supported_features(self):
-        self.assertEqual(
-            self.subject.supported_features,
-            (
-                ClimateEntityFeature.TARGET_TEMPERATURE
-                | ClimateEntityFeature.PRESET_MODE
-            ),
-        )
-
     def test_icon(self):
-        self.dps[HVACMODE_DPS] = True
-        self.assertEqual(self.subject.icon, "mdi:hot-tub")
-
-        self.dps[HVACMODE_DPS] = False
-        self.assertEqual(self.subject.icon, "mdi:hvac-off")
+        self.dps[POWER_DPS] = True
+        self.dps[HVACMODE_DPS] = "smart"
+        self.assertEqual(self.subject.icon, "mdi:refresh-auto")
+    #    self.dps[HVACMODE_DPS] = "cool"
+    #    self.assertEqual(self.subject.icon, "mdi:snowflake")
+    #    self.dps[HVACMODE_DPS] = "warm"
+    #    self.assertEqual(self.subject.icon, "mdi:hot-tub")
 
     def test_temperature_unit(self):
         self.dps[UNITS_DPS] = False
@@ -81,42 +74,56 @@ class TestIpsProHeatpump(
         self.dps[UNITS_DPS] = True
         self.assertEqual(self.subject.temperature_unit, TEMP_CELSIUS)
 
-    def test_minimum_celsius_temperature(self):
-        self.dps[UNITS_DPS] = False
+    def test_minimum_target_temperature(self):
+        self.dps[TEMPERATURE_DPS] = 18
         self.assertEqual(self.subject.min_temp, 18)
 
-    def test_maximum_celsius_temperature(self):
-        self.dps[UNITS_DPS] = False
+    def test_maximum_target_temperature(self):
+        self.dps[TEMPERATURE_DPS] = 40
         self.assertEqual(self.subject.max_temp, 40)
 
     def test_current_temperature(self):
-        self.dps[CURRENTTEMP_DPS] = 25
+        self.dps[TEMPERATURE_DPS] = 25
         self.assertEqual(self.subject.current_temperature, 25)
 
     def test_hvac_mode(self):
-        self.dps[HVACMODE_DPS] = True
+        self.dps[HVACMODE_DPS] = "warm"
         self.assertEqual(self.subject.hvac_mode, HVAC_MODE_HEAT)
-
-        self.dps[HVACMODE_DPS] = False
-        self.assertEqual(self.subject.hvac_mode, HVAC_MODE_OFF)
 
         self.dps[HVACMODE_DPS] = None
         self.assertEqual(self.subject.hvac_mode, STATE_UNAVAILABLE)
 
-    def test_hvac_modes(self):
-        self.assertCountEqual(self.subject.hvac_modes, [HVAC_MODE_OFF, HVAC_MODE_HEAT])
+    def test_hvac_mode(self):
+        self.dps[POWER_DPS] = True
+        self.dps[HVACMODE_DPS] = "smart"
+        self.assertEqual(self.subject.hvac_mode, HVACMode.HEAT_COOL)
+        self.dps[HVACMODE_DPS] = "cool"
+        self.assertEqual(self.subject.hvac_mode, HVACMode.COOL)
+        self.dps[HVACMODE_DPS] = "warm"
+        self.assertEqual(self.subject.hvac_mode, HVACMode.HEAT)
+        self.dps[POWER_DPS] = False
+        self.assertEqual(self.subject.hvac_mode, HVACMode.OFF)
 
-    async def test_turn_on(self):
+    async def test_set_hvac_mode_to_cool(self):
         async with assert_device_properties_set(
-            self.subject._device, {HVACMODE_DPS: True}
+            self.subject._device,
+            {POWER_DPS: True, HVACMODE_DPS: "cool"},
         ):
-            await self.subject.async_set_hvac_mode(HVAC_MODE_HEAT)
+            await self.subject.async_set_hvac_mode(HVACMode.COOL)
 
-    async def test_turn_off(self):
+    async def test_set_hvac_mode_to_heat(self):
         async with assert_device_properties_set(
-            self.subject._device, {HVACMODE_DPS: False}
+            self.subject._device,
+            {POWER_DPS: True, HVACMODE_DPS: "warm"},
         ):
-            await self.subject.async_set_hvac_mode(HVAC_MODE_OFF)
+            await self.subject.async_set_hvac_mode(HVACMode.HEAT)
+
+    async def test_set_hvac_mode_to_auto(self):
+        async with assert_device_properties_set(
+            self.subject._device,
+            {POWER_DPS: True, HVACMODE_DPS: "smart"},
+        ):
+            await self.subject.async_set_hvac_mode(HVACMode.HEAT_COOL)
 
     def test_preset_mode(self):
         self.dps[PRESET_DPS] = "silence"
@@ -151,15 +158,6 @@ class TestIpsProHeatpump(
             {PRESET_DPS: "booster"},
         ):
             await self.subject.async_set_preset_mode("booster")
-
-    def test_hvac_action(self):
-        self.dps[HVACMODE_DPS] = True
-        self.dps[OPMODE_DPS] = "heating"
-        self.assertEqual(self.subject.hvac_action, CURRENT_HVAC_HEAT)
-        self.dps[OPMODE_DPS] = "warm"
-        self.assertEqual(self.subject.hvac_action, CURRENT_HVAC_IDLE)
-        self.dps[HVACMODE_DPS] = False
-        self.assertEqual(self.subject.hvac_action, CURRENT_HVAC_OFF)
 
     def test_extra_state_attributes(self):
         self.dps[UNKNOWN115_DPS] = 3
