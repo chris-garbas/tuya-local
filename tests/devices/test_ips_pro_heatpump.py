@@ -59,15 +59,6 @@ class TestIpsProHeatpump(
         )
         self.mark_secondary(["sensor_power_level"])
 
-    def test_icon(self):
-        self.dps[POWER_DPS] = True
-        self.dps[HVACMODE_DPS] = "smart"
-        self.assertEqual(self.subject.icon, "mdi:refresh-auto")
-    #    self.dps[HVACMODE_DPS] = "cool"
-    #    self.assertEqual(self.subject.icon, "mdi:snowflake")
-    #    self.dps[HVACMODE_DPS] = "warm"
-    #    self.assertEqual(self.subject.icon, "mdi:hot-tub")
-
     def test_temperature_unit(self):
         self.dps[UNITS_DPS] = False
         self.assertEqual(self.subject.temperature_unit, TEMP_FAHRENHEIT)
@@ -84,7 +75,7 @@ class TestIpsProHeatpump(
 
     def test_current_temperature(self):
         self.dps[TEMPERATURE_DPS] = 25
-        self.assertEqual(self.subject.current_temperature, 25)
+        self.assertEqual(self.subject.temperature, 25)
 
     def test_hvac_mode(self):
         self.dps[HVACMODE_DPS] = "warm"
