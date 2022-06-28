@@ -35,6 +35,12 @@ class TestIpsProHeatpump(
     def setUp(self):
         self.setUpForConfig("ips_pro_heatpump.yaml", IPS_HEATPUMP_PAYLOAD)
         self.subject = self.entities.get("climate")
+        self.setUpTargetTemperature(
+            TEMPERATURE_DPS,
+            self.subject,
+            min=18,
+            max=40,
+        )
         self.setUpBasicSensor(
             POWERLEVEL_DPS,
             self.entities.get("sensor_power_level"),
@@ -58,7 +64,7 @@ class TestIpsProHeatpump(
         self.dps[TEMPERATURE_DPS] = 40
         self.assertEqual(self.subject.max_temp, 40)
 
-    def test_current_temperature(self):
+    def test_set_temperature(self):
         self.dps[TEMPERATURE_DPS] = 25
         self.assertEqual(self.subject.temperature, 25)
 
