@@ -101,19 +101,3 @@ secondary_entities:
         unit: "%"
         class: measurement
         readonly: true
-  - entity: sensor
-    name: Current Temperature
-    class: temperature
-    dps:
-      - id: 102
-        type: integer
-        name: sensor
-        readonly: true
-      - id: 103
-        name: unit
-        type: string
-        mapping:
-          - dps_val: false
-            value: F
-          - dps_val: true
-            value: C
