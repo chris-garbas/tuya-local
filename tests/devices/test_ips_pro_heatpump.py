@@ -1,11 +1,4 @@
-from homeassistant.components.climate.const import (
-    HVACMode,
-    CURRENT_HVAC_HEAT,
-    CURRENT_HVAC_IDLE,
-    CURRENT_HVAC_OFF,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-)
+from homeassistant.components.climate.const import HVACMode
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.const import (
     PERCENTAGE,
@@ -22,10 +15,8 @@ from .base_device_tests import TuyaDeviceTestCase
 
 POWER_DPS = "1"
 HVACMODE_DPS = "105"
-CURRENTTEMP_DPS = "102"
 UNITS_DPS = "103"
 POWERLEVEL_DPS = "104"
-OPMODE_DPS = "105"
 TEMPERATURE_DPS = "106"
 MIN_TEMPERATUR_DPS = "107"
 MAX_TEMPERATUR_DPS = "108"
