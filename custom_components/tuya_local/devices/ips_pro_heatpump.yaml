@@ -24,9 +24,6 @@ primary_entity:
           icon_priority: 1
           constraint: power
           conditions:
-            - dps_val: false
-              value_redirect: power
-              value: "off"
             - dps_val: true
               value: heat_cool
         - dps_val: cool
@@ -34,9 +31,6 @@ primary_entity:
           icon_priority: 2
           constraint: power
           conditions:
-            - dps_val: false
-              value_redirect: power
-              value: "off"
             - dps_val: true
               value: cool
         - dps_val: warm
@@ -44,9 +38,6 @@ primary_entity:
           icon_priority: 3
           constraint: power
           conditions:
-            - dps_val: false
-              value_redirect: power
-              value: "off"
             - dps_val: true
               value: heat
     - id: 2
