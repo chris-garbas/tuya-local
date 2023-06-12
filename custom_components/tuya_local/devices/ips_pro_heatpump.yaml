@@ -14,7 +14,28 @@ primary_entity:
           value: "on"
           icon: "mdi:hvac-on"
           icon_priority: 1
-      hidden: true
+    - id: 2
+      name: preset_mode
+      type: string
+      mapping:
+        - dps_val: "silence"
+          value: "silence"
+        - dps_val: "smart"
+          value: "smart"
+        - dps_val: "booster"
+          value: "booster"
+    - id: 102
+      name: current_temperature
+      type: integer
+      readonly: true
+    - id: 103
+      name: temperature_unit
+      type: boolean
+      mapping:
+        - dps_val: false
+          value: F
+        - dps_val: true
+          value: C
     - id: 105
       name: hvac_mode
       type: string
@@ -40,28 +61,6 @@ primary_entity:
           conditions:
             - dps_val: true
               value: heat
-    - id: 2
-      name: preset_mode
-      type: string
-      mapping:
-        - dps_val: "silence"
-          value: "silence"
-        - dps_val: "smart"
-          value: "smart"
-        - dps_val: "booster"
-          value: "booster"
-    - id: 102
-      name: current_temperature
-      type: integer
-      readonly: true
-    - id: 103
-      name: temperature_unit
-      type: boolean
-      mapping:
-        - dps_val: false
-          value: F
-        - dps_val: true
-          value: C
     - id: 106
       name: temperature
       type: integer
