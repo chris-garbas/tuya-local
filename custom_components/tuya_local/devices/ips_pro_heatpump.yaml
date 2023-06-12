@@ -6,15 +6,14 @@ primary_entity:
       name: power
       type: boolean
       mapping:
-        - dps_val: false
+        - dps_val: False
           value: "off"
           icon: "mdi:hvac-off"
           icon_priority: 1
-        - dps_val: true
+        - dps_val: True
           value: "on"
           icon: "mdi:hvac-on"
           icon_priority: 1
-      hidden: false
     - id: 2
       name: preset_mode
       type: string
@@ -46,8 +45,6 @@ primary_entity:
           icon_priority: 1
           constraint: power
           conditions:
-            - dps_val: false
-              value_redirect: power
             - dps_val: true
               value: heat_cool
         - dps_val: cool
@@ -55,8 +52,6 @@ primary_entity:
           icon_priority: 2
           constraint: power
           conditions:
-            - dps_val: false
-              value_redirect: power
             - dps_val: true
               value: cool
         - dps_val: warm
@@ -64,8 +59,6 @@ primary_entity:
           icon_priority: 3
           constraint: power
           conditions:
-            - dps_val: false
-              value_redirect: power
             - dps_val: true
               value: heat
     - id: 106
