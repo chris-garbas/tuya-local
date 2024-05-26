@@ -1,22 +1,22 @@
-name: Wetair WCH-750 AL WiFi Heater
+name: Wetair WCH-750 AL heater
 primary_entity:
   entity: climate
+  translation_only_key: heater
   dps:
     - id: 1
       type: boolean
       mapping:
         - dps_val: false
           value: "off"
-          icon: "mdi:radiator-disabled"
         - dps_val: true
           value: heat
-          icon: "mdi:radiator"
       name: hvac_mode
     - id: 2
       type: integer
       range:
         min: 10
         max: 35
+      unit: C
       mapping:
         - constraint: preset_mode
           conditions:
@@ -27,16 +27,15 @@ primary_entity:
       type: string
       name: preset_mode
       mapping:
-        - dps_val: "mod_free"
-          value: "comfort"
-        - dps_val: "mod_max12h"
-          value: "boost"
-        - dps_val: "mod_antiforst"
-          value: "away"
+        - dps_val: mod_free
+          value: comfort
+        - dps_val: mod_max12h
+          value: boost
+        - dps_val: mod_antiforst
+          value: away
     - id: 11
       type: string
       name: hvac_action
-      readonly: true
       mapping:
         - dps_val: heating
           constraint: hvac_mode
@@ -52,19 +51,13 @@ primary_entity:
               value: "off"
             - dps_val: true
               value: idle
-    - id: 19
-      type: string
-      name: timer
-    - id: 20
-      type: integer
-      name: countdown
     - id: 21
       type: integer
       name: unknown_21
 secondary_entities:
   - entity: light
     category: config
-    name: Display
+    translation_key: display
     dps:
       - id: 101
         type: string
@@ -72,20 +65,14 @@ secondary_entities:
         mapping:
           - dps_val: level0
             value: 0
-            step: 85
           - dps_val: level1
             value: 85
-            step: 85
           - dps_val: level2
             value: 170
-            step: 85
           - dps_val: level3
             value: 255
-            step: 85
-          - step: 85
   - entity: select
-    name: Timer
-    icon: "mdi:timer"
+    translation_key: timer
     category: config
     dps:
       - id: 19
@@ -141,11 +128,11 @@ secondary_entities:
           - dps_val: "23h"
             value: "23 hours"
           - dps_val: "24h"
-            value: "24 hours"          
+            value: "24 hours"
   - entity: sensor
     category: diagnostic
-    name: Timer
-    icon: "mdi:timer"
+    class: duration
+    translation_key: time_remaining
     dps:
       - id: 20
         type: integer

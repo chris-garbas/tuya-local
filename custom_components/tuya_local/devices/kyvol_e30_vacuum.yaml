@@ -1,4 +1,4 @@
-name: Kyvol E30 Vacuum
+name: Kyvol E30 vacuum
 primary_entity:
   entity: vacuum
   dps:
@@ -64,10 +64,6 @@ primary_entity:
           value: right
         - dps_val: stop
           value: stop
-    - id: 6
-      name: battery
-      type: integer
-      readonly: true
     - id: 13
       type: boolean
       name: locate
@@ -85,14 +81,10 @@ primary_entity:
           value: gentle
         - dps_val: "4"
           value: closed
-#    - id: 15
-#      type: string
-#      name: clean_record
-#      readonly: true
-#    - id: 16
-#      type: integer
-#      name: clean_area
-#      unit: m2
+    - id: 15
+      type: string
+      name: clean_record
+      optional: true
     - id: 18
       type: bitfield
       name: error
@@ -113,61 +105,82 @@ primary_entity:
           value: collision
     - id: 101
       type: string
-      name: unknown_101
+      name: water_status
     - id: 102
       type: string
-      name: unknown_102
+      name: model
     - id: 104
       type: string
-      name: unknown_104
+      name: mode
     - id: 107
       type: integer
-      name: unknown_107
+      name: carpet_adaptive
 secondary_entities:
   - entity: sensor
-    name: Clean Time
+    class: battery
+    dps:
+      - id: 6
+        type: integer
+        name: sensor
+        unit: "%"
+        class: measurement
+  - entity: sensor
+    name: Clean time
     category: diagnostic
+    class: duration
     icon: "mdi:clock-outline"
     dps:
       - id: 17
         type: integer
         name: sensor
         unit: min
-  - entity: switch
-    name: Edge Brush Reset
+  - entity: sensor
+    name: Clean area
+    category: diagnostic
+    icon: "mdi:floor-plan"
+    dps:
+      - id: 16
+        type: integer
+        name: sensor
+        optional: true
+        unit: m2
+        mapping:
+          - scale: 10
+  - entity: button
+    name: Edge brush reset
+    class: restart
     category: config
-    icon: "mdi:arrow-expand-all"
     dps:
       - id: 10
         type: boolean
-        name: switch
-  - entity: switch
-    name: Roll Brush Reset
-    icon: "mdi:refresh-circle"
+        name: button
+  - entity: button
+    name: Roll brush reset
+    class: restart
     category: config
     dps:
       - id: 11
         type: boolean
-        name: switch
-  - entity: switch
-    name: Filter Reset
+        name: button
+  - entity: button
+    name: Filter reset
     category: config
-    icon: "mdi:air-filter"
+    class: restart
     dps:
       - id: 12
         type: boolean
-        name: switch
+        name: button
   - entity: sensor
-    name: Edge Brush
+    name: Edge brush
     category: diagnostic
-    icon: "mdi-arrow-expand-all"
+    icon: "mdi:arrow-expand-all"
     dps:
       - id: 7
         type: integer
         name: sensor
         unit: "%"
   - entity: sensor
-    name: Roll Brush
+    name: Roll brush
     category: diagnostic
     icon: "mdi:circle"
     dps:

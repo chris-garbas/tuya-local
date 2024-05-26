@@ -1,17 +1,27 @@
-name: Beca BHT-6000 Thermostat (C)
+name: Beca BHT-6000 thermostat C
+products:
+  - id: IAYz2WK1th0cMLmL
+    name: MJZM 16A-3000BH
 primary_entity:
   entity: climate
   dps:
     - id: 1
       type: boolean
-      name: power
+      name: hvac_mode
       mapping:
         - dps_val: false
           value: "off"
-      hidden: true
+        - dps_val: true
+          constraint: mode
+          conditions:
+            - dps_val: "0"
+              value: auto
+            - dps_val: "1"
+              value: heat
     - id: 2
       type: integer
       name: temperature
+      unit: C
       range:
         min: 10
         max: 70
@@ -24,29 +34,14 @@ primary_entity:
         - scale: 2
     - id: 4
       type: string
-      name: hvac_mode
-      mapping:
-        - dps_val: "0"
-          constraint: power
-          conditions:
-            - dps_val: true
-              value: auto
-            - dps_val: false
-              value_redirect: power
-              value: "off"
-        - dps_val: "1"
-          constraint: power
-          conditions:
-            - dps_val: true
-              value: heat
-            - dps_val: false
-              value_redirect: power
+      name: mode
+      hidden: true
     - id: 5
       type: boolean
       name: preset_mode
       mapping:
         - dps_val: true
-          value: eco 
+          value: eco
         - dps_val: false
           value: comfort
     - id: 102
@@ -61,33 +56,15 @@ primary_entity:
       type: boolean
       name: unknown_104
 secondary_entities:
-  - entity: light
-    deprecated: climate hvac_mode
-    name: Display
-    category: config
-    dps:
-      - id: 1
-        type: boolean
-        name: switch
-        mapping:
-          - dps_val: true
-            icon: "mdi:led-on"
-          - dps_val: false
-            icon: "mdi:led-off"
   - entity: lock
-    name: Child Lock
+    translation_key: child_lock
     category: config
     dps:
       - id: 6
         type: boolean
         name: lock
-        mapping:
-          - dps_val: true
-            icon: "mdi:hand-back-right-off"
-          - dps_val: false
-            icon: "mdi:hand-back-right"
   - entity: sensor
-    name: External Temperature
+    name: External temperature
     class: temperature
     dps:
       - id: 102

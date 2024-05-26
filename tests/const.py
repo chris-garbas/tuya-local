@@ -36,6 +36,14 @@ EUROM_WALLDESIGNHEAT2000_HEATER_PAYLOAD = {
     "7": False,
 }
 
+EUROM_SANIWALLHEAT2000_HEATER_PAYLOAD = {
+    "1": True,
+    "2": 21,
+    "3": 19,
+    "4": "off",
+    "7": False,
+}
+
 GECO_HEATER_PAYLOAD = {"1": True, "2": True, "3": 30, "4": 25, "5": 0, "6": 0}
 
 JJPRO_JPD01_PAYLOAD = {
@@ -609,7 +617,7 @@ SASWELL_C16_THERMOSTAT_PAYLOAD = {
     "10": True,
     "11": False,
     "12": "7",
-    "14": 0,
+    "14": "0",
     "15": 0,
     "17": 0,
     "21": False,
@@ -831,6 +839,11 @@ TIMED_SOCKET_PAYLOAD = {
     "11": 0,
 }
 
+TIMED_SOCKETV2_PAYLOAD = {
+    "1": True,
+    "9": 0,
+}
+
 DIGOO_DGSP202_SOCKET_PAYLOAD = {
     "1": True,
     "2": True,
@@ -863,6 +876,17 @@ WOOX_R4028_SOCKET_PAYLOAD = {
     "102": 0,
     "103": 0,
     "105": 0,
+}
+
+ES01_POWERSTRIP_PAYLOAD = {
+    "1": True,
+    "2": True,
+    "3": True,
+    "4": True,
+    "5": 0,
+    "6": 0,
+    "7": 0,
+    "8": 0,
 }
 
 OWON_PCT513_THERMOSTAT_PAYLOAD = {
@@ -961,26 +985,6 @@ NASHONE_MTS700WB_THERMOSTAT_PAYLOAD = {
     "42": 0,
 }
 
-SMARTMCB_SMT006_METER_PAYLOAD = {
-    "1": 141630,
-    #    "6": "CHoAQgQADlwAAA==",
-    #    "7": "AAAAAAAAAAAAAA==",
-    #    "8": "AAAAAAAAAAAAAA==",
-    "9": 0,
-    "11": False,
-    "12": False,
-    "13": 0,
-    #    "14": 0,
-    "16": True,
-    "19": "FSE-F723C46A04FC6C",
-    "101": 275,
-    "102": 170,
-    "103": 40,
-    "104": 30,
-    "105": False,
-    "106": False,
-}
-
 LEFANT_M213_VACUUM_PAYLOAD = {
     "1": True,
     "2": False,
@@ -1015,6 +1019,7 @@ KYVOL_E30_VACUUM_PAYLOAD = {
     "12": False,
     "13": False,
     "14": "3",
+    "16": 0,
     "17": 0,
     "18": 0,
     "101": "2",
@@ -1107,7 +1112,7 @@ PARKSIDE_PLGS2012A1_PAYLOAD = {
     "8": False,
     "9": True,
     "10": 5,
-    "11": "unknown",
+    "11": 0,
     "101": 2500,
     "102": 11,
     "103": False,
@@ -1191,6 +1196,18 @@ WEAU_POOL_HEATPUMP_PAYLOAD = {
     "6": 0,
 }
 
+WEAU_POOL_HEATPUMPV2_PAYLOAD = {
+    "1": True,
+    "2": "eheat",
+    "9": 15,
+    "10": 260,
+    "20": 0,
+    "101": 0,
+    "102": 40,
+    "103": 15,
+    "104": True,
+}
+
 SMARTPLUG_ENCODED_PAYLOAD = {
     "1": True,
     "11": 0,
@@ -1222,13 +1239,13 @@ QS_C01_CURTAIN_PAYLOAD = {
 }
 
 M027_CURTAIN_PAYLOAD = {
-    "1": "stop",
+    "1": "close",
     "2": 0,
-    "3": 0,
     "4": "morning",
-    "7": "opening",
-    "9": 0,
-    "10": 20000,
+    "7": "closing",
+    "10": 0,
+    "12": 0,
+    "101": False,
 }
 
 JIAHONG_ET72W_PAYLOAD = {
@@ -1269,4 +1286,364 @@ EESEE_ADAM_PAYLOAD = {
     "16": 72,
     "17": "cancel",
     "19": 0,
+}
+
+ALECOAIR_D14_PAYLOAD = {
+    "1": True,
+    "2": 50,
+    "4": "manual",
+    "5": "low",
+    "10": False,
+    "14": False,
+    "16": 72,
+    "17": "cancel",
+    "19": 0,
+}
+
+HYUNDAI_SAHARA_PAYLOAD = {
+    "1": True,
+    "2": 50,
+    "4": "high",
+    "6": 73,
+    "7": 25,
+    "14": False,
+    "16": False,
+    "19": 0,
+}
+
+RGBCW_LIGHTBULB_PAYLOAD = {
+    "20": True,
+    "21": "white",
+    "22": 1000,
+    "23": 500,
+    "24": "0000000003e8",
+    "25": "000e0d0000000000000000c80000",
+    "26": 0,
+}
+
+MOES_TEMP_HUMID_PAYLOAD = {
+    "1": True,
+    "2": False,
+    "3": True,
+    "4": "manual",
+    "6": 374,
+    "8": False,
+    "9": 0,
+    "11": False,
+    "12": 0,
+    "18": 0,
+    "20": 0,
+    "21": 0,
+    "22": 0,
+    "24": "",
+    "101": "",
+    "102": "",
+    "103": 0,
+    "104": 0,
+    "105": "off",
+    "106": "mix",
+}
+
+ORION_SMARTLOCK_PAYLOAD = {
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0,
+    "8": 0,
+    "9": 0,
+    "10": False,
+    "12": 100,
+    "15": 0,
+    "16": False,
+}
+
+ELECTRIQ_AIRFLEX15W_PAYLOAD = {
+    "1": True,
+    "2": 16,
+    "3": 27,
+    "17": 90,
+    "20": 0,
+    "101": "1",
+    "103": False,
+    "104": "1",
+    "105": 0,
+    "106": False,
+    "109": False,
+    "112": 42,
+}
+
+PC321TY_POWERCLAMP_PAYLOAD = {
+    "101": 2284,
+    "102": 1073,
+    "103": 191,
+    "104": 78,
+    "106": 251,
+    "111": 2354,
+    "112": 748,
+    "113": 47,
+    "114": 100,
+    "116": 267,
+    "121": 2350,
+    "122": 753,
+    "123": 149,
+    "124": 84,
+    "126": 517,
+    "131": 1036,
+    "132": 2574,
+    "133": 188,
+    "135": 50,
+    "136": 390,
+}
+
+ENERGY_POWERSTRIP_PAYLOAD = {
+    "1": False,
+    "2": False,
+    "3": False,
+    "4": False,
+    "102": 0,
+    "103": 0,
+    "104": 2240,
+    "105": 1,
+    "106": 1709,
+    "107": 34620,
+    "108": 101000,
+    "109": 205,
+}
+
+COMPTEUR_SMARTMETER_PAYLOAD = {
+    "17": 12345,
+    "18": 2000,
+    "19": 4400,
+    "20": 2200,
+    "21": 0,
+    "22": 0,
+    "23": 0,
+    "24": 0,
+    "25": 0,
+    "26": 0,
+}
+
+BECOOL_HEATPUMP_PAYLOAD = {
+    "1": False,
+    "4": 0,
+    "5": "4",
+    "6": 24,
+    "8": "0",
+    "10": False,
+    "13": 0,
+    "14": 0,
+    "15": 0,
+    "16": True,
+    "17": False,
+    "19": False,
+}
+
+ESSENTIALS_PURIFIER_PAYLOAD = {
+    "1": True,
+    "2": 12,
+    "3": "auto",
+    "5": 50,
+    "7": False,
+    "9": False,
+    "11": False,
+    "18": "cancel",
+    "19": 0,
+    "21": "good",
+    "101": "Standard",
+}
+
+AVATTO_BLINDS_PAYLOAD = {
+    "1": "close",
+    "2": 0,
+    "3": 0,
+    "5": False,
+    "7": "closing",
+    "8": "cancel",
+    "9": 0,
+    "11": 0,
+}
+
+AVATTO_CURTAIN_PAYLOAD = {
+    "1": "stop",
+    "101": True,
+}
+
+ORION_SIREN_PAYLOAD = {
+    "1": "normal",
+    "5": "middle",
+    "6": True,
+    "7": 10,
+    "15": 0,
+    "20": True,
+}
+
+INKBIRD_SOUSVIDE_PAYLOAD = {
+    "101": False,
+    "102": "stop",
+    "103": 0,
+    "104": 297,
+    "105": 0,
+    "106": 0,
+    "107": 3,
+    "108": True,
+    "109": 0,
+    "110": 0,
+}
+
+HYDROTHERM_DYNAMICX8_PAYLOAD = {
+    "1": True,
+    "2": 65,
+    "3": 60,
+    "4": "STANDARD",
+    "21": 0,
+}
+
+TREATLIFE_DS02F_PAYLOAD = {
+    "1": True,
+    "2": 0,
+    "3": "level_2",
+}
+
+MOTION_LIGHT_PAYLOAD = {
+    "101": "mode_auto",
+    "102": False,
+    "103": 0,
+    "104": 249,
+    "105": 374,
+    "106": False,
+}
+
+BLITZWOLF_BWSH2_PAYLOAD = {
+    "1": True,
+    "3": "grade1",
+    "6": "close",
+    "19": "cancel",
+}
+
+BCOM_CAMERA_PAYLOAD = {
+    "101": True,
+    "103": False,
+    "104": False,
+    "106": "1",
+    "108": "0",
+    "109": "64GB",
+    "110": 1,
+    "111": False,
+    "115": "",
+    "117": 0,
+    "136": "",
+    "150": True,
+    "151": "1",
+    "162": False,
+    "231": "",
+    "232": False,
+}
+
+GX_AROMA_PAYLOAD = {
+    "1": True,
+    "2": "high",
+    "3": "cancel",
+    "4": 0,
+    "5": True,
+    "6": "colour",
+    "8": "b9fff500ab46ff",
+    "9": 0,
+}
+
+MOEBOT_PAYLOAD = {
+    "6": 41,
+    "101": "MOWING",
+    "102": 0,
+    "103": "MOWER_LEAN",
+    "104": True,
+    "105": 8,
+    "106": 1343,
+    "114": "AutoMode",
+}
+
+TOMPD63LW_SOCKET_PAYLOAD = {
+    "1": 139470,
+    "6": "CPQAFEkAAuk=",
+    "9": 0,
+    "11": False,
+    "12": False,
+    "13": 0,
+    "16": True,
+    "19": "FSE-F723C46A04FC6C",
+    # "101": 275,
+    # "102": 170,
+    # "103": 40,
+    # "104": 30,
+    # "105": False,
+    # "106": False,
+}
+
+GOLDAIR_GPDH340_PAYLOAD = {
+    "1": True,
+    "2": "2",
+    "4": 60,
+    "6": "2",
+    "11": 0,
+    "103": 20,
+    "104": 72,
+    "105": 40,
+    "106": False,
+    "107": True,
+    "108": False,
+    "109": False,
+}
+
+THERMEX_IF50V_PAYLOAD = {
+    "101": False,
+    "102": 37,
+    "104": 65,
+    "105": "2",
+    "106": 0,
+}
+
+ZXG30_ALARM_PAYLOAD = {
+    "1": "home",
+    "2": 0,
+    "3": 3,
+    "4": True,
+    "9": False,
+    "10": False,
+    "15": True,
+    "16": 100,
+    "17": True,
+    "20": False,
+    "21": False,
+    "22": 1,
+    "23": "2",
+    "24": "Normal",
+    "27": True,
+    "28": 10,
+    "29": True,
+    "32": "normal",
+    "34": False,
+    "35": False,
+    "36": "3",
+    "37": "0",
+    "39": "0",
+    "40": "1",
+}
+
+IR_REMOTE_SENSORS_PAYLOAD = {
+    "101": 200,
+    "102": 80,
+}
+
+LORATAP_CURTAINSWITCH_PAYLOAD = {
+    "1": "3",
+}
+
+BLE_WATERVALVE_PAYLOAD = {
+    "1": True,
+    "4": 0,
+    "7": 50,
+    "9": 3600,
+    "10": "cancel",
+    "12": "unknown",
+    "15": 60,
 }

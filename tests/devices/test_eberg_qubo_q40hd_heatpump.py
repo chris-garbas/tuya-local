@@ -1,17 +1,13 @@
 from homeassistant.components.climate.const import (
+    PRESET_COMFORT,
+    PRESET_SLEEP,
+    SWING_OFF,
+    SWING_VERTICAL,
     ClimateEntityFeature,
     HVACAction,
     HVACMode,
-    PRESET_SLEEP,
-    PRESET_COMFORT,
-    SWING_OFF,
-    SWING_VERTICAL,
 )
-from homeassistant.const import (
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-    TIME_HOURS,
-)
+from homeassistant.const import UnitOfTemperature, UnitOfTime
 
 from ..const import EBERG_QUBO_Q40HD_PAYLOAD
 from ..helpers import assert_device_properties_set
@@ -45,14 +41,14 @@ class TestEbergQuboQ40HDHeatpump(
         self.setUpTargetTemperature(
             TEMPERATURE_DPS,
             self.subject,
-            min=17,
-            max=30,
+            min=17.0,
+            max=30.0,
         )
         self.setUpBasicNumber(
             TIMER_DPS,
             self.entities.get("number_timer"),
             max=24,
-            unit=TIME_HOURS,
+            unit=UnitOfTime.HOURS,
         )
         self.mark_secondary(["number_timer"])
 
@@ -64,23 +60,16 @@ class TestEbergQuboQ40HDHeatpump(
                 | ClimateEntityFeature.FAN_MODE
                 | ClimateEntityFeature.PRESET_MODE
                 | ClimateEntityFeature.SWING_MODE
+                | ClimateEntityFeature.TURN_OFF
+                | ClimateEntityFeature.TURN_ON
             ),
         )
 
-    def test_icon(self):
-        self.dps[POWER_DPS] = True
-        self.dps[HVACMODE_DPS] = "cold"
-        self.assertEqual(self.subject.icon, "mdi:snowflake")
-        self.dps[HVACMODE_DPS] = "hot"
-        self.assertEqual(self.subject.icon, "mdi:fire")
-        self.dps[POWER_DPS] = False
-        self.assertEqual(self.subject.icon, "mdi:hvac-off")
-
     def test_temperature_unit(self):
         self.dps[UNIT_DPS] = "c"
-        self.assertEqual(self.subject.temperature_unit, TEMP_CELSIUS)
+        self.assertEqual(self.subject.temperature_unit, UnitOfTemperature.CELSIUS)
         self.dps[UNIT_DPS] = "f"
-        self.assertEqual(self.subject.temperature_unit, TEMP_FAHRENHEIT)
+        self.assertEqual(self.subject.temperature_unit, UnitOfTemperature.FAHRENHEIT)
 
     def test_minimum_target_temperature_f(self):
         self.dps[UNIT_DPS] = "f"
@@ -102,6 +91,9 @@ class TestEbergQuboQ40HDHeatpump(
         self.dps[HVACMODE_DPS] = "hot"
         self.assertEqual(self.subject.hvac_mode, HVACMode.HEAT)
 
+        self.dps[HVACMODE_DPS] = "dehumidify"
+        self.assertEqual(self.subject.hvac_mode, HVACMode.DRY)
+
         self.dps[HVACMODE_DPS] = "cold"
         self.dps[POWER_DPS] = False
         self.assertEqual(self.subject.hvac_mode, HVACMode.OFF)
@@ -112,21 +104,34 @@ class TestEbergQuboQ40HDHeatpump(
             [
                 HVACMode.OFF,
                 HVACMode.COOL,
+                HVACMode.DRY,
                 HVACMode.HEAT,
             ],
         )
 
-    async def test_turn_on(self):
+    async def test_set_hvac_cool(self):
         async with assert_device_properties_set(
             self.subject._device, {POWER_DPS: True, HVACMODE_DPS: "cold"}
         ):
             await self.subject.async_set_hvac_mode(HVACMode.COOL)
 
-    async def test_turn_off(self):
+    async def test_set_hvac_off(self):
         async with assert_device_properties_set(
             self.subject._device, {POWER_DPS: False}
         ):
             await self.subject.async_set_hvac_mode(HVACMode.OFF)
+
+    async def test_turn_on(self):
+        async with assert_device_properties_set(
+            self.subject._device, {POWER_DPS: True}
+        ):
+            await self.subject.async_turn_on()
+
+    async def test_turn_off(self):
+        async with assert_device_properties_set(
+            self.subject._device, {POWER_DPS: False}
+        ):
+            await self.subject.async_turn_off()
 
     def test_fan_mode(self):
         self.dps[FAN_DPS] = "low"

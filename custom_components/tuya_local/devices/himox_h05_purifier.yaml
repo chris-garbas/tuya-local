@@ -1,6 +1,7 @@
-name: Himox H05 Air Purifier
+name: Himox H05 air purifier
 primary_entity:
   entity: fan
+  translation_only_key: fan_with_presets
   dps:
     - id: 1
       type: boolean
@@ -10,16 +11,15 @@ primary_entity:
       name: preset_mode
       mapping:
         - dps_val: auto
-          value: auto
+          value: smart
         - dps_val: low
-          value: low
+          value: sleep
         - dps_val: mid
-          value: mid
+          value: fresh
         - dps_val: high
-          value: high
+          value: strong
 secondary_entities:
   - entity: sensor
-    name: Current Temperature
     class: temperature
     category: diagnostic
     dps:
@@ -29,37 +29,31 @@ secondary_entities:
         unit: C
         class: measurement
   - entity: sensor
-    name: Active Filter Life
+    name: Active filter life
     icon: "mdi:air-filter"
     category: diagnostic
     dps:
       - id: 5
         type: integer
         name: sensor
-        readonly: true
         unit: "%"
   - entity: lock
-    name: Child Lock
+    translation_key: child_lock
     category: config
     dps:
       - id: 7
         type: boolean
         name: lock
-        mapping:
-          - dps_val: true
-            icon: "mdi:hand-back-right-off"
-          - dps_val: false
-            icon: "mdi:hand-back-right"
-  - entity: switch
-    name: Filter Reset
+  - entity: button
+    name: Filter reset
+    class: restart
     category: config
     dps:
       - id: 11
         type: boolean
-        name: switch
+        name: button
   - entity: select
-    name: Timer
-    icon: "mdi:timer"
+    translation_key: timer
     category: config
     dps:
       - id: 18
@@ -77,9 +71,8 @@ secondary_entities:
           - dps_val: 8h
             value: "8 hours"
   - entity: sensor
-    name: Air Quality
+    name: Air quality
     dps:
       - id: 21
         type: string
         name: sensor
-        readonly: true

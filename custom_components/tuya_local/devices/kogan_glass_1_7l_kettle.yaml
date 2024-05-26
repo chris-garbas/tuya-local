@@ -1,4 +1,4 @@
-name: Kogan Smart Kettle
+name: Kogan smart kettle
 primary_entity:
   entity: climate
   dps:
@@ -15,4 +15,4 @@ primary_entity:
     - id: 5
       type: integer
       name: current_temperature
-      readonly: true
+      unit: C

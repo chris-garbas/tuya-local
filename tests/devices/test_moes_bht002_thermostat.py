@@ -1,9 +1,10 @@
 from homeassistant.components.climate.const import (
+    PRESET_COMFORT,
+    PRESET_ECO,
     ClimateEntityFeature,
     HVACMode,
-    PRESET_ECO,
-    PRESET_COMFORT,
 )
+from homeassistant.const import UnitOfTemperature
 
 from ..const import MOES_BHT002_PAYLOAD
 from ..helpers import assert_device_properties_set
@@ -47,14 +48,13 @@ class TestMoesBHT002Thermostat(
             (
                 ClimateEntityFeature.PRESET_MODE
                 | ClimateEntityFeature.TARGET_TEMPERATURE
+                | ClimateEntityFeature.TURN_OFF
+                | ClimateEntityFeature.TURN_ON
             ),
         )
 
     def test_temperature_unit(self):
-        self.assertEqual(
-            self.subject.temperature_unit,
-            self.subject._device.temperature_unit,
-        )
+        self.assertEqual(self.subject.temperature_unit, UnitOfTemperature.CELSIUS)
 
     async def test_legacy_set_temperature_with_preset_mode(self):
         async with assert_device_properties_set(
@@ -106,9 +106,3 @@ class TestMoesBHT002Thermostat(
             self.subject.extra_state_attributes,
             {"unknown_104": False},
         )
-
-    def test_icons(self):
-        self.dps[LOCK_DPS] = True
-        self.assertEqual(self.basicLock.icon, "mdi:hand-back-right-off")
-        self.dps[LOCK_DPS] = False
-        self.assertEqual(self.basicLock.icon, "mdi:hand-back-right")

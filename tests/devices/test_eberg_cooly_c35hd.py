@@ -1,10 +1,10 @@
 from homeassistant.components.climate.const import (
-    ClimateEntityFeature,
-    HVACMode,
     SWING_OFF,
     SWING_VERTICAL,
+    ClimateEntityFeature,
+    HVACMode,
 )
-from homeassistant.const import TEMP_CELSIUS, TEMP_FAHRENHEIT
+from homeassistant.const import UnitOfTemperature
 
 from ..const import EBERG_COOLY_C35HD_PAYLOAD
 from ..helpers import assert_device_properties_set
@@ -41,15 +41,15 @@ class TestEbergCoolyC35HDHeatpump(
         self.setUpTargetTemperature(
             TEMPERATURE_DPS,
             self.subject,
-            min=13,
-            max=32,
+            min=13.0,
+            max=32.0,
         )
         self.setUpBasicSelect(
             UNIT_DPS,
             self.entities.get("select_temperature_unit"),
             {
-                True: "Fahrenheit",
-                False: "Celsius",
+                True: "fahrenheit",
+                False: "celsius",
             },
         )
         self.mark_secondary(["select_temperature_unit"])
@@ -61,27 +61,16 @@ class TestEbergCoolyC35HDHeatpump(
                 ClimateEntityFeature.TARGET_TEMPERATURE
                 | ClimateEntityFeature.FAN_MODE
                 | ClimateEntityFeature.SWING_MODE
+                | ClimateEntityFeature.TURN_OFF
+                | ClimateEntityFeature.TURN_ON
             ),
         )
 
-    def test_icon(self):
-        self.dps[POWER_DPS] = True
-        self.dps[HVACMODE_DPS] = "1"
-        self.assertEqual(self.subject.icon, "mdi:fire")
-        self.dps[HVACMODE_DPS] = "2"
-        self.assertEqual(self.subject.icon, "mdi:water")
-        self.dps[HVACMODE_DPS] = "3"
-        self.assertEqual(self.subject.icon, "mdi:snowflake")
-        self.dps[HVACMODE_DPS] = "4"
-        self.assertEqual(self.subject.icon, "mdi:fan")
-        self.dps[POWER_DPS] = False
-        self.assertEqual(self.subject.icon, "mdi:hvac-off")
-
     def test_temperature_unit(self):
         self.dps[UNIT_DPS] = False
-        self.assertEqual(self.subject.temperature_unit, TEMP_CELSIUS)
+        self.assertEqual(self.subject.temperature_unit, UnitOfTemperature.CELSIUS)
         self.dps[UNIT_DPS] = True
-        self.assertEqual(self.subject.temperature_unit, TEMP_FAHRENHEIT)
+        self.assertEqual(self.subject.temperature_unit, UnitOfTemperature.FAHRENHEIT)
 
     def test_minimum_target_temperature_f(self):
         self.dps[UNIT_DPS] = True

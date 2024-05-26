@@ -1,12 +1,5 @@
-from homeassistant.components.climate.const import (
-    ClimateEntityFeature,
-    HVACMode,
-)
-from homeassistant.const import (
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-    TIME_HOURS,
-)
+from homeassistant.components.climate.const import ClimateEntityFeature, HVACMode
+from homeassistant.const import UnitOfTemperature, UnitOfTime
 
 from ..const import ECOSTRAD_ACCENTIQ_HEATER_PAYLOAD
 from ..helpers import assert_device_properties_set
@@ -39,21 +32,23 @@ class TestEcostradAccentIqHeater(
             TIMER_DPS,
             self.entities.get("number_timer"),
             max=12,
-            unit=TIME_HOURS,
+            unit=UnitOfTime.HOURS,
         )
         self.mark_secondary(["number_timer"])
 
     def test_supported_features(self):
         self.assertEqual(
             self.subject.supported_features,
-            ClimateEntityFeature.TARGET_TEMPERATURE,
+            ClimateEntityFeature.TARGET_TEMPERATURE
+            | ClimateEntityFeature.TURN_OFF
+            | ClimateEntityFeature.TURN_ON,
         )
 
     def test_temperature_unit(self):
         self.dps[UNIT_DPS] = True
-        self.assertEqual(self.subject.temperature_unit, TEMP_CELSIUS)
+        self.assertEqual(self.subject.temperature_unit, UnitOfTemperature.CELSIUS)
         self.dps[UNIT_DPS] = False
-        self.assertEqual(self.subject.temperature_unit, TEMP_FAHRENHEIT)
+        self.assertEqual(self.subject.temperature_unit, UnitOfTemperature.FAHRENHEIT)
 
     def test_current_temperature(self):
         self.dps[CURRENTTEMP_DPS] = 250

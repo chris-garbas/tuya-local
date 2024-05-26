@@ -1,19 +1,19 @@
+from homeassistant.components.button import ButtonDeviceClass
+from homeassistant.components.sensor import STATE_CLASS_MEASUREMENT, SensorDeviceClass
 from homeassistant.components.vacuum import (
     STATE_CLEANING,
-    STATE_DOCKED,
     STATE_ERROR,
+    STATE_IDLE,
+    STATE_PAUSED,
     STATE_RETURNING,
     VacuumEntityFeature,
 )
-from homeassistant.const import (
-    TIME_MINUTES,
-    PERCENTAGE,
-)
+from homeassistant.const import AREA_SQUARE_METERS, PERCENTAGE, UnitOfTime
 
 from ..const import KYVOL_E30_VACUUM_PAYLOAD
 from ..helpers import assert_device_properties_set
+from ..mixins.button import MultiButtonTests
 from ..mixins.sensor import MultiSensorTests
-from ..mixins.switch import MultiSwitchTests
 from .base_device_tests import TuyaDeviceTestCase
 
 POWER_DPS = "1"
@@ -30,26 +30,53 @@ RSTROLL_DPS = "11"
 RSTFILTER_DPS = "12"
 LOCATE_DPS = "13"
 FAN_DPS = "14"
+AREA_DPS = "16"
 TIME_DPS = "17"
 ERROR_DPS = "18"
-UNKNOWN101_DPS = "101"
-UNKNOWN102_DPS = "102"
-UNKNOWN104_DPS = "104"
-UNKNOWN106_DPS = "107"
+WATER_DPS = "101"
+MODEL_DPS = "102"
+MODE_DPS = "104"
+CARPET_DPS = "107"
 
 
-class TestKyvolE30Vacuum(MultiSensorTests, MultiSwitchTests, TuyaDeviceTestCase):
+class TestKyvolE30Vacuum(MultiButtonTests, MultiSensorTests, TuyaDeviceTestCase):
     __test__ = True
 
     def setUp(self):
         self.setUpForConfig("kyvol_e30_vacuum.yaml", KYVOL_E30_VACUUM_PAYLOAD)
         self.subject = self.entities.get("vacuum")
+        self.setUpMultiButtons(
+            [
+                {
+                    "dps": RSTEDGE_DPS,
+                    "name": "button_edge_brush_reset",
+                    "device_class": ButtonDeviceClass.RESTART,
+                },
+                {
+                    "dps": RSTROLL_DPS,
+                    "name": "button_roll_brush_reset",
+                    "device_class": ButtonDeviceClass.RESTART,
+                },
+                {
+                    "dps": RSTFILTER_DPS,
+                    "name": "button_filter_reset",
+                    "device_class": ButtonDeviceClass.RESTART,
+                },
+            ]
+        )
         self.setUpMultiSensors(
             [
                 {
+                    "dps": AREA_DPS,
+                    "name": "sensor_clean_area",
+                    "unit": AREA_SQUARE_METERS,
+                    "testdata": (30, 3.0),
+                },
+                {
                     "dps": TIME_DPS,
                     "name": "sensor_clean_time",
-                    "unit": TIME_MINUTES,
+                    "unit": UnitOfTime.MINUTES,
+                    "device_class": SensorDeviceClass.DURATION,
                 },
                 {
                     "dps": EDGE_DPS,
@@ -70,34 +97,27 @@ class TestKyvolE30Vacuum(MultiSensorTests, MultiSwitchTests, TuyaDeviceTestCase)
                     "dps": STATUS_DPS,
                     "name": "sensor_status",
                 },
-            ],
-        )
-        self.setUpMultiSwitch(
-            [
                 {
-                    "dps": RSTEDGE_DPS,
-                    "name": "switch_edge_brush_reset",
-                },
-                {
-                    "dps": RSTROLL_DPS,
-                    "name": "switch_roll_brush_reset",
-                },
-                {
-                    "dps": RSTFILTER_DPS,
-                    "name": "switch_filter_reset",
+                    "dps": BATTERY_DPS,
+                    "name": "sensor_battery",
+                    "unit": PERCENTAGE,
+                    "device_class": SensorDeviceClass.BATTERY,
+                    "state_class": STATE_CLASS_MEASUREMENT,
                 },
             ],
         )
+
         self.mark_secondary(
             [
+                "button_edge_brush_reset",
+                "button_roll_brush_reset",
+                "button_filter_reset",
+                "sensor_clean_area",
                 "sensor_clean_time",
                 "sensor_edge_brush",
                 "sensor_roll_brush",
                 "sensor_filter",
                 "sensor_status",
-                "switch_edge_brush_reset",
-                "switch_roll_brush_reset",
-                "switch_filter_reset",
             ]
         )
 
@@ -108,7 +128,6 @@ class TestKyvolE30Vacuum(MultiSensorTests, MultiSwitchTests, TuyaDeviceTestCase)
                 VacuumEntityFeature.STATE
                 | VacuumEntityFeature.STATUS
                 | VacuumEntityFeature.SEND_COMMAND
-                | VacuumEntityFeature.BATTERY
                 | VacuumEntityFeature.FAN_SPEED
                 | VacuumEntityFeature.TURN_ON
                 | VacuumEntityFeature.TURN_OFF
@@ -119,10 +138,6 @@ class TestKyvolE30Vacuum(MultiSensorTests, MultiSwitchTests, TuyaDeviceTestCase)
                 | VacuumEntityFeature.CLEAN_SPOT
             ),
         )
-
-    def test_battery_level(self):
-        self.dps[BATTERY_DPS] = 50
-        self.assertEqual(self.subject.battery_level, 50)
 
     def test_status(self):
         self.dps[COMMAND_DPS] = "standby"
@@ -145,14 +160,14 @@ class TestKyvolE30Vacuum(MultiSensorTests, MultiSwitchTests, TuyaDeviceTestCase)
         self.dps[COMMAND_DPS] = "return_to_base"
         self.assertEqual(self.subject.state, STATE_RETURNING)
         self.dps[COMMAND_DPS] = "standby"
-        self.assertEqual(self.subject.state, STATE_DOCKED)
+        self.assertEqual(self.subject.state, STATE_IDLE)
         self.dps[COMMAND_DPS] = "random"
         self.assertEqual(self.subject.state, STATE_CLEANING)
         self.dps[POWER_DPS] = False
-        self.assertEqual(self.subject.state, STATE_DOCKED)
+        self.assertEqual(self.subject.state, STATE_IDLE)
         self.dps[POWER_DPS] = True
         self.dps[SWITCH_DPS] = False
-        self.assertEqual(self.subject.state, STATE_DOCKED)
+        self.assertEqual(self.subject.state, STATE_PAUSED)
         self.dps[ERROR_DPS] = 1
         self.assertEqual(self.subject.state, STATE_ERROR)
 

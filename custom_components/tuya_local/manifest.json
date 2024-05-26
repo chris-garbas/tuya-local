@@ -1,12 +1,18 @@
 {
     "domain": "tuya_local",
-    "iot_class": "local_polling",
     "name": "Tuya Local",
-    "version": "0.17.0",
-    "documentation": "https://github.com/make-all/tuya-local",
-    "issue_tracker": "https://github.com/make-all/tuya-local/issues",
+    "codeowners": [
+        "@make-all"
+    ],
+    "config_flow": true,
     "dependencies": [],
-    "codeowners": ["@make-all"],
-    "requirements": ["pycryptodome~=3.14.1","tinytuya~=1.6.0"],
-    "config_flow": true
+    "documentation": "https://github.com/make-all/tuya-local",
+    "integration_type": "device",
+    "iot_class": "local_push",
+    "issue_tracker": "https://github.com/make-all/tuya-local/issues",
+    "requirements": [
+        "tinytuya==1.13.2",
+        "tuya-device-sharing-sdk==0.1.9"
+    ],
+    "version": "2024.5.3"
 }

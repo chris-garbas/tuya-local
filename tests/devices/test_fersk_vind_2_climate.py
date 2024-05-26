@@ -1,10 +1,10 @@
 from homeassistant.components.climate.const import (
-    ClimateEntityFeature,
-    HVACMode,
     SWING_OFF,
     SWING_VERTICAL,
+    ClimateEntityFeature,
+    HVACMode,
 )
-from homeassistant.const import TEMP_CELSIUS, TEMP_FAHRENHEIT
+from homeassistant.const import UnitOfTemperature
 
 from ..const import FERSK_VIND2_PAYLOAD
 from ..helpers import assert_device_properties_set
@@ -36,8 +36,8 @@ class TestFerskVind2Climate(TargetTemperatureTests, TuyaDeviceTestCase):
         self.setUpTargetTemperature(
             TEMPERATURE_DPS,
             self.subject,
-            min=16,
-            max=32,
+            min=16.0,
+            max=32.0,
         )
 
     def test_supported_features(self):
@@ -47,27 +47,16 @@ class TestFerskVind2Climate(TargetTemperatureTests, TuyaDeviceTestCase):
                 ClimateEntityFeature.TARGET_TEMPERATURE
                 | ClimateEntityFeature.FAN_MODE
                 | ClimateEntityFeature.SWING_MODE
+                | ClimateEntityFeature.TURN_OFF
+                | ClimateEntityFeature.TURN_ON
             ),
         )
 
-    def test_icon(self):
-        self.dps[POWER_DPS] = True
-        self.dps[HVACMODE_DPS] = "COOL"
-        self.assertEqual(self.subject.icon, "mdi:snowflake")
-        self.dps[HVACMODE_DPS] = "FAN"
-        self.assertEqual(self.subject.icon, "mdi:fan")
-        self.dps[HVACMODE_DPS] = "DRY"
-        self.assertEqual(self.subject.icon, "mdi:water")
-        self.dps[HVACMODE_DPS] = "HEAT"
-        self.assertEqual(self.subject.icon, "mdi:fire")
-        self.dps[POWER_DPS] = False
-        self.assertEqual(self.subject.icon, "mdi:hvac-off")
-
     def test_temperature_unit(self):
         self.dps[UNIT_DPS] = "C"
-        self.assertEqual(self.subject.temperature_unit, TEMP_CELSIUS)
+        self.assertEqual(self.subject.temperature_unit, UnitOfTemperature.CELSIUS)
         self.dps[UNIT_DPS] = "F"
-        self.assertEqual(self.subject.temperature_unit, TEMP_FAHRENHEIT)
+        self.assertEqual(self.subject.temperature_unit, UnitOfTemperature.FAHRENHEIT)
 
     def test_minimum_target_temperature_f(self):
         self.dps[UNIT_DPS] = "F"

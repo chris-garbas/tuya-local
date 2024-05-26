@@ -1,4 +1,4 @@
-name: Himox H06 Air Purifier
+name: Himox H06 air purifier
 primary_entity:
   entity: fan
   dps:
@@ -17,32 +17,31 @@ primary_entity:
           value: 100
 secondary_entities:
   - entity: sensor
-    name: Active Filter Life
+    name: Active filter life
     icon: "mdi:air-filter"
     category: diagnostic
     dps:
       - id: 5
         type: integer
         name: sensor
-        readonly: true
         unit: "%"
   - entity: light
-    name: AQ Indicator
+    name: AQ indicator
     category: config
     dps:
       - id: 8
         type: boolean
         name: switch
-  - entity: switch
-    name: Filter Reset
+  - entity: button
+    name: Filter reset
     category: config
+    class: restart
     dps:
       - id: 11
         type: boolean
-        name: switch
+        name: button
   - entity: select
-    name: Timer
-    icon: "mdi:timer"
+    translation_key: timer
     category: config
     dps:
       - id: 18
@@ -56,22 +55,20 @@ secondary_entities:
           - dps_val: 8h
             value: "8 hours"
   - entity: sensor
-    name: Timer
-    icon: "mdi:timer"
+    translation_key: time_remaining
     category: diagnostic
+    class: duration
     dps:
       - id: 19
         type: integer
         name: sensor
-        readonly: true
         unit: "min"
   - entity: sensor
-    name: Air Quality
+    name: Air quality
     dps:
       - id: 22
         type: string
         name: sensor
-        readonly: true
   - entity: select
     name: Configuration
     dps:
