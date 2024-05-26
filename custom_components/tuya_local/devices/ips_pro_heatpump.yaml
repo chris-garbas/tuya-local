@@ -54,15 +54,14 @@ primary_entity:
       type: string
       mapping:
         - dps_val: "silence"
-          value: "silence"
+          value: sleep
         - dps_val: "smart"
-          value: "smart"
+          value: comfort
         - dps_val: "booster"
-          value: "booster"
+          value: boost
     - id: 102
       name: current_temperature
       type: integer
-      readonly: true
     - id: 103
       name: temperature_unit
       type: boolean
@@ -71,6 +70,17 @@ primary_entity:
           value: F
         - dps_val: true
           value: C
+    - id: 105
+      name: hvac_action
+      type: string
+      mapping:
+        - dps_val: warm
+          constraint: hvac_mode
+          conditions:
+            - dps_val: false
+              value: "off"
+            - dps_val: true
+              value: idle
     - id: 106
       name: temperature
       type: integer
@@ -83,16 +93,26 @@ primary_entity:
       name: max_temperature
       readonly: true
     - id: 115
-      type: integer
-      name: unknown_115
+      type: bitfield
+      name: error
+      mapping:
+        - dps_val: 0
+          value: OK
+        - dps_val: 4
+          value: Water Flow Protection
+          icon: "mdi:water-pump-off"
+          icon_priority: 2
     - id: 116
-      type: integer
-      name: unknown_116
+      type: bitfield
+      name: error_2
+    - id: 143
+      type: boolean
+      name: unknown_43
+      optional: true
 secondary_entities:
   - entity: sensor
-    name: Power Level
+    name: Power level
     class: power_factor
-    icon: "mdi:signal"
     category: diagnostic
     dps:
       - id: 104
@@ -101,7 +121,6 @@ secondary_entities:
         unit: "%"
         class: measurement
         readonly: true
-
   - entity: sensor
     name: Current Temperature
     class: temperature
@@ -118,3 +137,13 @@ secondary_entities:
             value: F
           - dps_val: true
             value: C
+  - entity: sensor
+    class: power
+    category: diagnostic
+    dps:
+      - id: 142
+        name: sensor
+        type: integer
+        unit: W
+        optional: true
+

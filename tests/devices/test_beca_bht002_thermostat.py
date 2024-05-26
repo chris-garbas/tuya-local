@@ -1,16 +1,15 @@
 from homeassistant.components.climate.const import (
+    PRESET_COMFORT,
+    PRESET_ECO,
     ClimateEntityFeature,
     HVACMode,
-    PRESET_ECO,
-    PRESET_COMFORT,
 )
 from homeassistant.components.sensor import SensorDeviceClass
-from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import UnitOfTemperature
 
 from ..const import BECA_BHT002_PAYLOAD
 from ..helpers import assert_device_properties_set
 from ..mixins.climate import TargetTemperatureTests
-from ..mixins.light import BasicLightTests
 from ..mixins.lock import BasicLockTests
 from ..mixins.sensor import BasicSensorTests
 from .base_device_tests import TuyaDeviceTestCase
@@ -26,7 +25,6 @@ UNKNOWN104_DPS = "104"
 
 
 class TestBecaBHT002Thermostat(
-    BasicLightTests,
     BasicLockTests,
     BasicSensorTests,
     TargetTemperatureTests,
@@ -47,17 +45,16 @@ class TestBecaBHT002Thermostat(
             max=35.0,
             scale=2,
         )
-        self.setUpBasicLight(POWER_DPS, self.entities.get("light_display"))
         self.setUpBasicLock(LOCK_DPS, self.entities.get("lock_child_lock"))
         self.setUpBasicSensor(
             FLOOR_DPS,
             self.entities.get("sensor_external_temperature"),
-            unit=TEMP_CELSIUS,
+            unit=UnitOfTemperature.CELSIUS,
             device_class=SensorDeviceClass.TEMPERATURE,
             state_class="measurement",
             testdata=(30, 15),
         )
-        self.mark_secondary(["light_display", "lock_child_lock"])
+        self.mark_secondary(["lock_child_lock"])
 
     def test_supported_features(self):
         self.assertEqual(
@@ -65,13 +62,15 @@ class TestBecaBHT002Thermostat(
             (
                 ClimateEntityFeature.PRESET_MODE
                 | ClimateEntityFeature.TARGET_TEMPERATURE
+                | ClimateEntityFeature.TURN_OFF
+                | ClimateEntityFeature.TURN_ON
             ),
         )
 
     def test_temperature_unit(self):
         self.assertEqual(
             self.subject.temperature_unit,
-            self.subject._device.temperature_unit,
+            UnitOfTemperature.CELSIUS,
         )
 
     async def test_legacy_set_temperature_with_preset_mode(self):
@@ -125,14 +124,3 @@ class TestBecaBHT002Thermostat(
             self.subject.extra_state_attributes,
             {"floor_temperature": 22.5, "unknown_104": False},
         )
-
-    def test_icons(self):
-        self.dps[POWER_DPS] = True
-        self.assertEqual(self.basicLight.icon, "mdi:led-on")
-        self.dps[POWER_DPS] = False
-        self.assertEqual(self.basicLight.icon, "mdi:led-off")
-
-        self.dps[LOCK_DPS] = True
-        self.assertEqual(self.basicLock.icon, "mdi:hand-back-right-off")
-        self.dps[LOCK_DPS] = False
-        self.assertEqual(self.basicLock.icon, "mdi:hand-back-right")

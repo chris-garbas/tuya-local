@@ -1,9 +1,10 @@
-name: Renpho RP-AP001S
+name: Renpho RP-AP001S purifier
 products:
   - id: oaleouzsq0sk4quk
 primary_entity:
   entity: fan
   icon: "mdi:air-purifier"
+  translation_only_key: fan_with_presets
   dps:
     - id: 1
       name: switch
@@ -12,14 +13,14 @@ primary_entity:
       name: preset_mode
       type: string
       mapping:
-        - dps_val: "low"
-          value: low
-        - dps_val: "mid"
-          value: mid
-        - dps_val: "high"
-          value: high
-        - dps_val: "auto"
-          value: auto
+        - dps_val: low
+          value: sleep
+        - dps_val: mid
+          value: fresh
+        - dps_val: high
+          value: strong
+        - dps_val: auto
+          value: smart
     - id: 19
       name: timer
       type: string
@@ -40,17 +41,12 @@ primary_entity:
       type: integer
 secondary_entities:
   - entity: lock
-    name: Child Lock
+    translation_key: child_lock
     category: config
     dps:
       - id: 7
         name: lock
         type: boolean
-        mapping:
-          - dps_val: true
-            icon: "mdi:hand-back-right"
-          - dps_val: false
-            icon: "mdi:hand-back-right-off"
   - entity: light
     name: AQ indicator
     category: config
@@ -73,15 +69,22 @@ secondary_entities:
         name: switch
         type: boolean
   - entity: sensor
-    name: Air Quality
-    class: aqi
+    name: Air quality
+    class: enum
     category: diagnostic
     dps:
       - id: 22
         type: string
         name: sensor
+        mapping:
+          - dps_val: "bad"
+            value: "Bad"
+          - dps_val: "fair"
+            value: "Fair"
+          - dps_val: "good"
+            value: "Good"
   - entity: sensor
-    name: Prefilter Life
+    name: Prefilter life
     category: diagnostic
     icon: "mdi:air-filter"
     dps:
@@ -89,7 +92,7 @@ secondary_entities:
         type: integer
         name: sensor
   - entity: sensor
-    name: Charcoal Filter Life
+    name: Charcoal filter life
     category: diagnostic
     icon: "mdi:air-filter"
     dps:
@@ -97,7 +100,7 @@ secondary_entities:
         type: integer
         name: sensor
   - entity: sensor
-    name: Active Filter Life
+    name: Active filter life
     category: diagnostic
     icon: "mdi:air-filter"
     dps:
@@ -105,7 +108,7 @@ secondary_entities:
         type: integer
         name: sensor
   - entity: sensor
-    name: HEPA Filter Life
+    name: HEPA filter life
     category: diagnostic
     icon: "mdi:air-filter"
     dps:

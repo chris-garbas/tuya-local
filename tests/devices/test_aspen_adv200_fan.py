@@ -1,13 +1,10 @@
-from homeassistant.components.climate.const import (
-    ClimateEntityFeature,
-    HVACMode,
-)
+from homeassistant.components.climate.const import ClimateEntityFeature, HVACMode
 from homeassistant.components.fan import (
     DIRECTION_FORWARD,
     DIRECTION_REVERSE,
     FanEntityFeature,
 )
-from homeassistant.const import TEMP_FAHRENHEIT
+from homeassistant.const import UnitOfTemperature
 
 from ..const import ASPEN_ASP200_FAN_PAYLOAD
 from ..helpers import assert_device_properties_set
@@ -38,19 +35,20 @@ class TestAspenASP200Fan(
         self.setUpDimmableLight(
             LIGHT_DPS,
             self.entities.get("light_display"),
-            offval=0,
+            offval=1,
             tests=[
                 (1, 85),
                 (2, 170),
                 (3, 255),
             ],
+            no_off=True,
         )
         self.setUpSwitchable(SWITCH_DPS, self.subject)
         self.setUpTargetTemperature(
             TEMPERATURE_DPS,
             self.climate,
-            min=40,
-            max=95,
+            min=40.0,
+            max=95.0,
         )
         self.mark_secondary(["light_display"])
 
@@ -65,7 +63,9 @@ class TestAspenASP200Fan(
         )
         self.assertEqual(
             self.climate.supported_features,
-            ClimateEntityFeature.TARGET_TEMPERATURE,
+            ClimateEntityFeature.TARGET_TEMPERATURE
+            | ClimateEntityFeature.TURN_OFF
+            | ClimateEntityFeature.TURN_ON,
         )
 
     def test_fan_direction(self):
@@ -96,9 +96,9 @@ class TestAspenASP200Fan(
 
     def test_fan_speed(self):
         self.dps[SPEED_DPS] = "1"
-        self.assertAlmostEqual(self.subject.percentage, 33.3, 1)
+        self.assertAlmostEqual(self.subject.percentage, 33, 0)
         self.dps[SPEED_DPS] = "2"
-        self.assertAlmostEqual(self.subject.percentage, 66.7, 1)
+        self.assertAlmostEqual(self.subject.percentage, 66, 0)
         self.dps[SPEED_DPS] = "3"
         self.assertEqual(self.subject.percentage, 100)
 
@@ -121,34 +121,34 @@ class TestAspenASP200Fan(
             await self.subject.async_set_percentage(80)
 
     def test_fan_preset_modes(self):
-        self.assertCountEqual(self.subject.preset_modes, ["constant", "auto"])
+        self.assertCountEqual(self.subject.preset_modes, ["normal", "smart"])
 
     def test_fan_preset_mode(self):
         self.dps[PRESET_DPS] = False
-        self.assertEqual(self.subject.preset_mode, "constant")
+        self.assertEqual(self.subject.preset_mode, "normal")
         self.dps[PRESET_DPS] = True
-        self.assertEqual(self.subject.preset_mode, "auto")
+        self.assertEqual(self.subject.preset_mode, "smart")
 
     async def test_fan_set_preset_to_constant(self):
         async with assert_device_properties_set(
             self.subject._device,
             {PRESET_DPS: False},
         ):
-            await self.subject.async_set_preset_mode("constant")
+            await self.subject.async_set_preset_mode("normal")
 
     async def test_fan_set_preset_to_auto(self):
         async with assert_device_properties_set(
             self.subject._device,
             {PRESET_DPS: True},
         ):
-            await self.subject.async_set_preset_mode("auto")
+            await self.subject.async_set_preset_mode("smart")
 
     def test_climate_current_temperature(self):
         self.dps[CURTEMP_DPS] = 24
         self.assertEqual(self.climate.current_temperature, 24)
 
     def test_climate_temperature_unit(self):
-        self.assertEqual(self.climate.temperature_unit, TEMP_FAHRENHEIT)
+        self.assertEqual(self.climate.temperature_unit, UnitOfTemperature.FAHRENHEIT)
 
     def test_climate_hvac_mode(self):
         self.dps[SWITCH_DPS] = False

@@ -1,16 +1,13 @@
-"""Tests for the MoesHouse RGBW smart socket."""
-from homeassistant.components.light import (
-    ColorMode,
-    EFFECT_COLORLOOP,
-    LightEntityFeature,
-)
+"""Tests for the MoesHouse RGB smart socket."""
+
+from homeassistant.components.light import ColorMode, LightEntityFeature
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.components.switch import SwitchDeviceClass
 from homeassistant.const import (
-    ELECTRIC_CURRENT_MILLIAMPERE,
-    ELECTRIC_POTENTIAL_VOLT,
-    POWER_WATT,
-    TIME_MINUTES,
+    UnitOfElectricCurrent,
+    UnitOfElectricPotential,
+    UnitOfPower,
+    UnitOfTime,
 )
 
 from ..const import MOES_RGB_SOCKET_PAYLOAD
@@ -24,7 +21,7 @@ LIGHT_DPS = "1"
 MODE_DPS = "2"
 BRIGHTNESS_DPS = "3"
 UNKNOWN4_DPS = "4"
-RGBW_DPS = "5"
+RGB_DPS = "5"
 SCENE_DPS = "6"
 SCENE1_DPS = "7"
 SCENE2_DPS = "8"
@@ -37,7 +34,7 @@ POWER_DPS = "105"
 VOLTAGE_DPS = "106"
 
 
-class TestMoesRGBWSocket(
+class TestMoesRGBSocket(
     BasicNumberTests,
     MultiSensorTests,
     BasicSwitchTests,
@@ -47,11 +44,11 @@ class TestMoesRGBWSocket(
 
     def setUp(self):
         self.setUpForConfig("moes_rgb_socket.yaml", MOES_RGB_SOCKET_PAYLOAD)
-        self.light = self.entities.get("light_night_light")
+        self.light = self.entities.get("light_nightlight")
 
         self.setUpBasicSwitch(
             SWITCH_DPS,
-            self.entities.get("switch"),
+            self.entities.get("switch_outlet"),
             device_class=SwitchDeviceClass.OUTLET,
             power_dps=POWER_DPS,
             power_scale=10,
@@ -60,7 +57,7 @@ class TestMoesRGBWSocket(
             TIMER_DPS,
             self.entities.get("number_timer"),
             max=1440.0,
-            unit=TIME_MINUTES,
+            unit=UnitOfTime.MINUTES,
             scale=60,
         )
         self.setUpMultiSensors(
@@ -68,7 +65,7 @@ class TestMoesRGBWSocket(
                 {
                     "name": "sensor_voltage",
                     "dps": VOLTAGE_DPS,
-                    "unit": ELECTRIC_POTENTIAL_VOLT,
+                    "unit": UnitOfElectricPotential.VOLT,
                     "device_class": SensorDeviceClass.VOLTAGE,
                     "state_class": "measurement",
                     "testdata": (2300, 230.0),
@@ -76,14 +73,14 @@ class TestMoesRGBWSocket(
                 {
                     "name": "sensor_current",
                     "dps": CURRENT_DPS,
-                    "unit": ELECTRIC_CURRENT_MILLIAMPERE,
+                    "unit": UnitOfElectricCurrent.MILLIAMPERE,
                     "device_class": SensorDeviceClass.CURRENT,
                     "state_class": "measurement",
                 },
                 {
                     "name": "sensor_power",
                     "dps": POWER_DPS,
-                    "unit": POWER_WATT,
+                    "unit": UnitOfPower.WATT,
                     "device_class": SensorDeviceClass.POWER,
                     "state_class": "measurement",
                     "testdata": (1234, 123.4),
@@ -107,36 +104,41 @@ class TestMoesRGBWSocket(
 
     def test_light_brightness(self):
         self.dps[BRIGHTNESS_DPS] = 45
-        self.assertEqual(self.light.brightness, 45)
+        self.dps[MODE_DPS] = "white"
+        self.assertEqual(self.light.brightness, 23)
+        self.dps[RGB_DPS] = "808000003cff80"
+        self.dps[MODE_DPS] = "colour"
+        self.assertEqual(self.light.brightness, 128)
 
     def test_light_color_mode(self):
         self.dps[MODE_DPS] = "colour"
-        self.assertEqual(self.light.color_mode, ColorMode.RGBW)
+        self.assertEqual(self.light.color_mode, ColorMode.HS)
         self.dps[MODE_DPS] = "white"
         self.assertEqual(self.light.color_mode, ColorMode.WHITE)
         self.dps[MODE_DPS] = "scene"
-        self.assertEqual(self.light.color_mode, ColorMode.RGBW)
+        self.assertEqual(self.light.color_mode, ColorMode.HS)
         self.dps[MODE_DPS] = "scene_1"
-        self.assertEqual(self.light.color_mode, ColorMode.RGBW)
+        self.assertEqual(self.light.color_mode, ColorMode.HS)
         self.dps[MODE_DPS] = "scene_2"
-        self.assertEqual(self.light.color_mode, ColorMode.RGBW)
+        self.assertEqual(self.light.color_mode, ColorMode.HS)
         self.dps[MODE_DPS] = "scene_3"
-        self.assertEqual(self.light.color_mode, ColorMode.RGBW)
+        self.assertEqual(self.light.color_mode, ColorMode.HS)
         self.dps[MODE_DPS] = "scene_4"
-        self.assertEqual(self.light.color_mode, ColorMode.RGBW)
+        self.assertEqual(self.light.color_mode, ColorMode.HS)
 
-    def test_light_rgbw_color(self):
-        self.dps[RGBW_DPS] = "ffff00003cffff"
+    def test_light_hs_color(self):
+        self.dps[RGB_DPS] = "ffff00003cffff"
+        self.dps[BRIGHTNESS_DPS] = 255
         self.assertSequenceEqual(
-            self.light.rgbw_color,
-            (255, 255, 0, 255),
+            self.light.hs_color,
+            (60, 100),
         )
 
     def test_light_effect_list(self):
         self.assertCountEqual(
             self.light.effect_list,
             [
-                EFFECT_COLORLOOP,
+                "Scene",
                 "Scene 1",
                 "Scene 2",
                 "Scene 3",
@@ -146,7 +148,7 @@ class TestMoesRGBWSocket(
 
     def test_light_effect(self):
         self.dps[MODE_DPS] = "scene"
-        self.assertEqual(self.light.effect, EFFECT_COLORLOOP)
+        self.assertEqual(self.light.effect, "Scene")
         self.dps[MODE_DPS] = "scene_1"
         self.assertEqual(self.light.effect, "Scene 1")
         self.dps[MODE_DPS] = "scene_2"
@@ -159,13 +161,14 @@ class TestMoesRGBWSocket(
     def test_light_supported_color_modes(self):
         self.assertCountEqual(
             self.light.supported_color_modes,
-            {ColorMode.RGBW, ColorMode.WHITE},
+            {ColorMode.HS, ColorMode.WHITE},
         )
 
     def test_light_supported_features(self):
         self.assertEqual(self.light.supported_features, LightEntityFeature.EFFECT)
 
     async def test_turn_on(self):
+        self.dps[LIGHT_DPS] = False
         async with assert_device_properties_set(self.light._device, {LIGHT_DPS: True}):
             await self.light.async_turn_on()
 
@@ -174,28 +177,28 @@ class TestMoesRGBWSocket(
             await self.light.async_turn_off()
 
     async def test_set_brightness(self):
+        self.dps[LIGHT_DPS] = True
+        self.dps[MODE_DPS] = "white"
         async with assert_device_properties_set(
             self.light._device,
             {
-                LIGHT_DPS: True,
-                MODE_DPS: "white",
-                BRIGHTNESS_DPS: 128,
+                BRIGHTNESS_DPS: 140,
             },
         ):
-            await self.light.async_turn_on(color_mode=ColorMode.WHITE, brightness=128)
+            await self.light.async_turn_on(brightness=128)
 
-    async def test_set_rgbw(self):
+    async def test_set_hs_color(self):
+        self.dps[BRIGHTNESS_DPS] = 255
+        self.dps[LIGHT_DPS] = True
+        self.dps[MODE_DPS] = "colour"
+
         async with assert_device_properties_set(
             self.light._device,
             {
-                LIGHT_DPS: True,
-                MODE_DPS: "colour",
-                RGBW_DPS: "ff00000000ffff",
+                RGB_DPS: "ff00000000ffff",
             },
         ):
-            await self.light.async_turn_on(
-                color_mode=ColorMode.RGBW, rgbw_color=(255, 0, 0, 255)
-            )
+            await self.light.async_turn_on(hs_color=(0, 100))
 
     def test_extra_state_attributes_set(self):
         self.dps[UNKNOWN4_DPS] = 4

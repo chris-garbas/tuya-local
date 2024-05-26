@@ -1,5 +1,5 @@
 name: Smartplug with encoded info
-product:
+products:
   - id: A6bBfm2fmKKRfIxU
     name: スマートプラグ
 primary_entity:
@@ -11,21 +11,17 @@ primary_entity:
       name: switch
     - id: 101
       type: base64
-      name: unknown_101
-      readonly: true
+      name: random
     - id: 102
       type: base64
-      name: unknown_102
-      readonly: true
+      name: circulate
     - id: 103
       type: base64
-      name: unknown_103
-      readonly: true
+      name: schedule
 secondary_entities:
   - entity: number
     category: config
-    icon: "mdi:timer"
-    name: Timer
+    translation_key: timer
     dps:
       - id: 11
         type: integer
@@ -37,4 +33,3 @@ secondary_entities:
         mapping:
           - scale: 60
             step: 60
-  

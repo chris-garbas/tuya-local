@@ -1,6 +1,7 @@
 """Tests for the Logicom Strippy 4-way+USB powerstrip."""
+
 from homeassistant.components.switch import SwitchDeviceClass
-from homeassistant.const import TIME_MINUTES
+from homeassistant.const import UnitOfTime
 
 from ..const import LOGICOM_STRIPPY_PAYLOAD
 from ..mixins.number import MultiNumberTests
@@ -50,7 +51,11 @@ class TestLogicomPowerstrip(
                     "name": "switch_outlet_4",
                     "device_class": SwitchDeviceClass.OUTLET,
                 },
-                {"dps": SWITCHUSB_DPS, "name": "switch_usb_switch"},
+                {
+                    "dps": SWITCHUSB_DPS,
+                    "name": "switch_usb_switch",
+                    "device_class": SwitchDeviceClass.SWITCH,
+                },
             ]
         )
         self.setUpMultiNumber(
@@ -60,35 +65,35 @@ class TestLogicomPowerstrip(
                     "name": "number_timer_1",
                     "max": 1440,
                     "scale": 60,
-                    "unit": TIME_MINUTES,
+                    "unit": UnitOfTime.MINUTES,
                 },
                 {
                     "dps": TIMER2_DPS,
                     "name": "number_timer_2",
                     "max": 1440,
                     "scale": 60,
-                    "unit": TIME_MINUTES,
+                    "unit": UnitOfTime.MINUTES,
                 },
                 {
                     "dps": TIMER3_DPS,
                     "name": "number_timer_3",
                     "max": 1440,
                     "scale": 60,
-                    "unit": TIME_MINUTES,
+                    "unit": UnitOfTime.MINUTES,
                 },
                 {
                     "dps": TIMER4_DPS,
                     "name": "number_timer_4",
                     "max": 1440,
                     "scale": 60,
-                    "unit": TIME_MINUTES,
+                    "unit": UnitOfTime.MINUTES,
                 },
                 {
                     "dps": TIMERUSB_DPS,
                     "name": "number_usb_timer",
                     "max": 1440,
                     "scale": 60,
-                    "unit": TIME_MINUTES,
+                    "unit": UnitOfTime.MINUTES,
                 },
             ]
         )

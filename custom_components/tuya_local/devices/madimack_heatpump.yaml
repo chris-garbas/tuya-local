@@ -1,4 +1,4 @@
-name: Madimack Pool Heatpump
+name: Madimack pool heatpump
 primary_entity:
   entity: climate
   dps:
@@ -13,11 +13,10 @@ primary_entity:
         - dps_val: true
           value: "heat"
           icon: "mdi:hot-tub"
-          icon_priority: 3
+          icon_priority: 4
     - id: 102
       name: current_temperature
       type: integer
-      readonly: true
     - id: 103
       name: temperature_unit
       type: boolean
@@ -29,7 +28,6 @@ primary_entity:
     - id: 105
       name: hvac_action
       type: string
-      readonly: true
       mapping:
         - dps_val: heating
           value: heating
@@ -72,17 +70,19 @@ primary_entity:
           value: OK
         - dps_val: 4
           value: Water Flow Protection
+          icon: "mdi:water-pump-off"
+          icon_priority: 2
     - id: 116
-      type: integer
-      name: unknown_116
+      type: bitfield
+      name: error_2
     - id: 117
       name: preset_mode
       type: boolean
       mapping:
         - dps_val: false
-          value: Silent
+          value: sleep
         - dps_val: true
-          value: Boost
+          value: boost
     - id: 118
       name: unknown_118
       type: boolean
@@ -90,8 +90,13 @@ primary_entity:
       name: unknown_126
       type: integer
     - id: 130
-      name: unknown_130
+      name: defrosting
       type: boolean
+      hidden: true
+      mapping:
+        - dps_val: true
+          icon: "mdi:snowflake-melt"
+          icon_priority: 3
     - id: 134
       name: unknown_134
       type: boolean
@@ -110,7 +115,7 @@ primary_entity:
 secondary_entities:
   - entity: sensor
     category: diagnostic
-    name: Power Level
+    name: Power level
     icon: "mdi:signal"
     class: power_factor
     dps:
@@ -118,11 +123,10 @@ secondary_entities:
         type: integer
         name: sensor
         unit: "%"
-        readonly: true
   - entity: sensor
     category: diagnostic
     class: temperature
-    name: Evaporator Coil Pipe Temperature
+    name: Evaporator coil pipe temperature
     dps:
       - id: 120
         type: integer
@@ -136,7 +140,7 @@ secondary_entities:
           - dps_val: true
             value: C
   - entity: binary_sensor
-    name: Water Flow
+    name: Water flow
     class: problem
     category: diagnostic
     dps:
@@ -147,10 +151,17 @@ secondary_entities:
           - dps_val: 4
             value: true
           - value: false
+  - entity: binary_sensor
+    translation_key: defrost
+    category: diagnostic
+    dps:
+      - id: 130
+        type: boolean
+        name: sensor
   - entity: sensor
     category: diagnostic
     class: temperature
-    name: Exhaust Gas Temperature
+    name: Exhaust gas temperature
     dps:
       - id: 122
         type: integer
@@ -166,7 +177,7 @@ secondary_entities:
   - entity: sensor
     category: diagnostic
     class: temperature
-    name: Ambient Temperature
+    name: Ambient temperature
     dps:
       - id: 124
         type: integer
@@ -181,7 +192,7 @@ secondary_entities:
             value: C
   - entity: sensor
     category: diagnostic
-    name: Compressor Speed
+    name: Compressor speed
     class: power_factor
     dps:
       - id: 125
@@ -191,7 +202,7 @@ secondary_entities:
   - entity: sensor
     category: diagnostic
     class: temperature
-    name: Cooling Plate Temperature
+    name: Cooling plate temperature
     dps:
       - id: 127
         type: integer
@@ -206,14 +217,14 @@ secondary_entities:
             value: C
   - entity: sensor
     category: diagnostic
-    name: EEV Opening
+    name: EEV opening
     dps:
       - id: 128
         name: sensor
         type: integer
   - entity: sensor
     category: diagnostic
-    name: Fan Speed
+    name: Fan speed
     dps:
       - id: 129
         name: sensor

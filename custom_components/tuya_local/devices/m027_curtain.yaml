@@ -1,4 +1,4 @@
-name: M027 Curtain
+name: M027 curtain
 primary_entity:
   entity: cover
   class: curtain
@@ -24,22 +24,35 @@ primary_entity:
       name: current_position
       type: integer
       unit: "%"
+      optional: true
     - id: 7
       name: action
       type: string
+      optional: true
+      persist: false
       mapping:
         - dps_val: opening
+          value: opening
           constraint: current_position
           conditions:
             - dps_val: 100
               value: opened
-            - value: opening
+            - dps_val: null
+              value: opened
         - dps_val: closing
+          value: closing
           constraint: current_position
           conditions:
             - dps_val: 0
               value: closed
-            - value: closing
+            - dps_val: null
+              value: closed
+    - id: 12
+      name: fault_code
+      type: bitfield
+    - id: 101
+      name: unknown_101
+      type: boolean
 secondary_entities:
   - entity: select
     name: Mode
@@ -55,16 +68,17 @@ secondary_entities:
           - dps_val: night
             value: Night
   - entity: sensor
-    name: Time Remaining
-    icon: "mdi:timer"
+    translation_key: time_remaining
+    class: duration
     category: diagnostic
     dps:
       - id: 9
         name: sensor
         type: integer
+        optional: true
         unit: s
   - entity: sensor
-    name: Travel Time
+    name: Travel time
     icon: "mdi:hourglass"
     category: diagnostic
     dps:
@@ -72,3 +86,14 @@ secondary_entities:
         name: sensor
         type: integer
         unit: ms
+  - entity: binary_sensor
+    class: problem
+    category: diagnostic
+    dps:
+      - id: 12
+        type: bitfield
+        name: sensor
+        mapping:
+          - dps_val: 0
+            value: false
+          - value: true

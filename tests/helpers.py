@@ -5,7 +5,9 @@ from custom_components.tuya_local.device import TuyaLocalDevice
 
 
 @asynccontextmanager
-async def assert_device_properties_set(device: TuyaLocalDevice, properties: dict):
+async def assert_device_properties_set(
+    device: TuyaLocalDevice, properties: dict, msg=None
+):
     results = []
     provided = {}
 
@@ -26,10 +28,12 @@ async def assert_device_properties_set(device: TuyaLocalDevice, properties: dict
     try:
         yield
     finally:
-        assert len(provided) == len(properties.keys())
+        if not msg:
+            msg = f"Expected {properties}, got {provided}"
+        assert len(provided) == len(properties.keys()), msg
         for p in properties:
-            assert p in provided
-            assert properties[p] == provided[p]
+            assert p in provided, msg
+            assert properties[p] == provided[p], msg
 
         for result in results:
             result.assert_awaited()

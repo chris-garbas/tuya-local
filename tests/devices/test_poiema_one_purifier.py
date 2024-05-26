@@ -1,16 +1,15 @@
+from homeassistant.components.button import ButtonDeviceClass
 from homeassistant.components.fan import FanEntityFeature
 from homeassistant.components.sensor import SensorDeviceClass
-from homeassistant.const import (
-    CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-    TIME_MINUTES,
-)
+from homeassistant.const import CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, UnitOfTime
 
 from ..const import POIEMA_ONE_PURIFIER_PAYLOAD
 from ..helpers import assert_device_properties_set
+from ..mixins.button import BasicButtonTests
 from ..mixins.lock import BasicLockTests
 from ..mixins.select import BasicSelectTests
 from ..mixins.sensor import MultiSensorTests
-from ..mixins.switch import BasicSwitchTests, SwitchableTests
+from ..mixins.switch import SwitchableTests
 from .base_device_tests import TuyaDeviceTestCase
 
 SWITCH_DPS = "1"
@@ -24,9 +23,9 @@ COUNTDOWN_DPS = "19"
 
 
 class TestPoeimaOnePurifier(
+    BasicButtonTests,
     BasicLockTests,
     BasicSelectTests,
-    BasicSwitchTests,
     MultiSensorTests,
     SwitchableTests,
     TuyaDeviceTestCase,
@@ -37,6 +36,11 @@ class TestPoeimaOnePurifier(
         self.setUpForConfig("poiema_one_purifier.yaml", POIEMA_ONE_PURIFIER_PAYLOAD)
         self.subject = self.entities["fan"]
         self.setUpSwitchable(SWITCH_DPS, self.subject)
+        self.setUpBasicButton(
+            RESET_DPS,
+            self.entities.get("button_filter_reset"),
+            ButtonDeviceClass.RESTART,
+        )
         self.setUpBasicLock(LOCK_DPS, self.entities.get("lock_child_lock"))
         self.setUpBasicSelect(
             TIMER_DPS,
@@ -50,29 +54,29 @@ class TestPoeimaOnePurifier(
                 "5h": "5 hours",
             },
         )
-        self.setUpBasicSwitch(RESET_DPS, self.entities.get("switch_filter_reset"))
         self.setUpMultiSensors(
             [
                 {
                     "dps": PM25_DPS,
-                    "name": "sensor_pm2_5",
+                    "name": "sensor_pm25",
                     "device_class": SensorDeviceClass.PM25,
                     "state_class": "measurement",
                     "unit": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
                 },
                 {
                     "dps": COUNTDOWN_DPS,
-                    "name": "sensor_timer",
-                    "unit": TIME_MINUTES,
+                    "name": "sensor_time_remaining",
+                    "unit": UnitOfTime.MINUTES,
+                    "device_class": SensorDeviceClass.DURATION,
                 },
             ]
         )
         self.mark_secondary(
             [
+                "button_filter_reset",
                 "lock_child_lock",
-                "switch_filter_reset",
                 "select_timer",
-                "sensor_timer",
+                "sensor_time_remaining",
             ]
         )
 
@@ -104,34 +108,34 @@ class TestPoeimaOnePurifier(
     def test_preset_modes(self):
         self.assertCountEqual(
             self.subject.preset_modes,
-            ["Manual", "Auto", "Sleep"],
+            ["normal", "smart", "sleep"],
         )
 
     def test_preset_mode(self):
         self.dps[MODE_DPS] = "manual"
-        self.assertEqual(self.subject.preset_mode, "Manual")
+        self.assertEqual(self.subject.preset_mode, "normal")
         self.dps[MODE_DPS] = "auto"
-        self.assertEqual(self.subject.preset_mode, "Auto")
+        self.assertEqual(self.subject.preset_mode, "smart")
         self.dps[MODE_DPS] = "sleep"
-        self.assertEqual(self.subject.preset_mode, "Sleep")
+        self.assertEqual(self.subject.preset_mode, "sleep")
 
     async def test_set_preset_to_manual(self):
         async with assert_device_properties_set(
             self.subject._device,
             {MODE_DPS: "manual"},
         ):
-            await self.subject.async_set_preset_mode("Manual")
+            await self.subject.async_set_preset_mode("normal")
 
     async def test_set_preset_to_auto(self):
         async with assert_device_properties_set(
             self.subject._device,
             {MODE_DPS: "auto"},
         ):
-            await self.subject.async_set_preset_mode("Auto")
+            await self.subject.async_set_preset_mode("smart")
 
     async def test_set_preset_to_sleep(self):
         async with assert_device_properties_set(
             self.subject._device,
             {MODE_DPS: "sleep"},
         ):
-            await self.subject.async_set_preset_mode("Sleep")
+            await self.subject.async_set_preset_mode("sleep")

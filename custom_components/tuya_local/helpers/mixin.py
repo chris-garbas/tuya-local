@@ -1,12 +1,13 @@
 """
 Mixins to make writing new platforms easier
 """
+
 import logging
+
 from homeassistant.const import (
     AREA_SQUARE_METERS,
     CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
+    UnitOfTemperature,
 )
 from homeassistant.helpers.entity import EntityCategory
 
@@ -20,6 +21,9 @@ class TuyaLocalEntity:
         self._device = device
         self._config = config
         self._attr_dps = []
+        self._attr_translation_key = (
+            config.translation_key or config.translation_only_key
+        )
         return {c.name: c for c in config.dps()}
 
     def _init_end(self, dps):
@@ -29,16 +33,30 @@ class TuyaLocalEntity:
 
     @property
     def should_poll(self):
-        return True
+        return False
 
     @property
     def available(self):
         return self._device.has_returned_state
 
     @property
+    def has_entity_name(self):
+        return True
+
+    @property
     def name(self):
         """Return the name for the UI."""
-        return self._config.name(self._device.name)
+        own_name = self._config.name
+        if not own_name and not self.use_device_name:
+            # super has the translation logic
+            own_name = getattr(super(), "name")
+        return own_name
+
+    @property
+    def use_device_name(self):
+        """Return whether to use the device name for the entity name"""
+        own_name = self._config.name or self._config.translation_key
+        return not own_name
 
     @property
     def unique_id(self):
@@ -73,16 +91,33 @@ class TuyaLocalEntity:
         """Get additional attributes that the platform itself does not support."""
         attr = {}
         for a in self._attr_dps:
-            attr[a.name] = a.get_value(self._device)
+            value = a.get_value(self._device)
+            if value is not None or not a.optional:
+                attr[a.name] = value
         return attr
+
+    @property
+    def entity_registry_enabled_default(self):
+        """Disable deprecated entities on new installations"""
+        return not self._config.deprecated
 
     async def async_update(self):
         await self._device.async_refresh()
 
+    async def async_added_to_hass(self):
+        self._device.register_entity(self)
+
+    async def async_will_remove_from_hass(self):
+        await self._device.async_unregister_entity(self)
+
+    def on_receive(self, dps, full_poll):
+        """Override to process dps directly as they are received"""
+        pass
+
 
 UNIT_ASCII_MAP = {
-    "C": TEMP_CELSIUS,
-    "F": TEMP_FAHRENHEIT,
+    "C": UnitOfTemperature.CELSIUS,
+    "F": UnitOfTemperature.FAHRENHEIT,
     "ugm3": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
     "m2": AREA_SQUARE_METERS,
 }

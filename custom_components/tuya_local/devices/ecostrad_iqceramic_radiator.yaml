@@ -1,7 +1,7 @@
-name: Ecostrad Radiator
+name: Ecostrad radiator
 primary_entity:
   entity: climate
-  icon: "mdi:radiator"
+  translation_only_key: heater
   dps:
     - id: 1
       type: boolean
@@ -18,18 +18,19 @@ primary_entity:
         - dps_val: "auto"
           value: Program
         - dps_val: "eco"
-          value: ECO
+          value: eco
         - dps_val: "hot"
-          value: Comfort
+          value: comfort
         - dps_val: "cold"
-          value: Anti-Freeze
+          value: away
         - dps_val: "person_infrared_ray"
-          value: Sensor
+          value: activity
         - dps_val: "line_control"
           value: Pilot Wire
     - id: 16
       type: integer
       name: temperature
+      unit: C
       range:
         min: 70
         max: 300
@@ -48,19 +49,14 @@ primary_entity:
       type: string
 secondary_entities:
   - entity: lock
-    name: Child Lock
+    translation_key: child_lock
     category: config
     dps:
       - id: 40
         type: boolean
         name: lock
-        mapping:
-          - dps_val: true
-            icon: "mdi:hand-back-right-off"
-          - dps_val: false
-            icon: "mdi:hand-back-right"
   - entity: select
-    name: Open Window Detection
+    name: Open window detection
     category: config
     dps:
       - id: 108
@@ -77,7 +73,7 @@ secondary_entities:
             value: "90 mins"
             icon: "mdi:window-open"
   - entity: select
-    name: PIR Timeout
+    name: PIR timeout
     category: config
     icon: "mdi:timer-settings-outline"
     dps:
@@ -94,7 +90,7 @@ secondary_entities:
           - dps_val: "60"
             value: "60 mins"
   - entity: switch
-    name: Time Sync
+    name: Time sync
     category: config
     dps:
       - id: 107
@@ -108,16 +104,13 @@ secondary_entities:
             value: false
             icon: "mdi:sync-off"
   - entity: number
-    name: Calibration Offset
+    name: Calibration offset
     category: config
-    icon: "mdi:thermometer"
     dps:
       - id: 27
         type: integer
         name: value
-        unit: C
+        unit: °
         range:
           min: -5
           max: 5
-
-    
