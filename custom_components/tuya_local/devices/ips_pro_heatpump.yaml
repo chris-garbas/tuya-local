@@ -2,39 +2,25 @@ name: IPS Heatpump
 primary_entity:
   entity: climate
   dps:
-  - id: 1
-    type: boolean
-    name: hvac_mode
-    mapping:
-        - dps_val: false
-          value: "off"
-        - dps_val: true
-          constraint: work_mode
-          conditions:
-            - dps_val: smart
-              value: heat_cool
-            - dps_val: cool
-              value: cool
-            - dps_val: warm
-              value: heat
-      hidden: true
-    - id: 105
-      name: work_mode
-      type: string
-      hidden: true
+    - id: 1
+      type: boolean
+      name: hvac_mode
       mapping:
-        - dps_val: smart
-          icon: "mdi:refresh-auto"
-          icon_priority: 1
-          value: heat_cool
-        - dps_val: cool
-          icon: "mdi:snowflake"
-          icon_priority: 2
-          value: cool
-        - dps_val: warm
-          icon: "mdi:hot-tub"
-          icon_priority: 3
-          value: heat
+          - dps_val: false
+            value: "off"
+          - dps_val: true
+            constraint: work_mode
+            conditions:
+              - dps_val: smart
+                value: heat_cool
+              - dps_val: cool
+                value: cool
+              - dps_val: warm
+                value: heat
+    - id: 105
+      type: string
+      name: work_mode
+      hidden: true
     - id: 2
       name: preset_mode
       type: string
